@@ -63,7 +63,7 @@ function validators.tostring()
 end
 function validators.tonumber(base)
     return function(value)
-        local nbr = tonumber(value)
+        local nbr = tonumber(value, base)
         return nbr ~= nil, nbr
     end
 end
