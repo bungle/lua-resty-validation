@@ -1,10 +1,10 @@
-local type = type
-local ipairs = ipairs
-local assert = assert
+local setmetatable = setmetatable
 local tostring = tostring
 local tonumber = tonumber
-local setmetatable = setmetatable
+local ipairs = ipairs
+local assert = assert
 local match = string.match
+local type = type
 local validators = {}
 function validators.type(t)
     return function(value)
@@ -51,7 +51,6 @@ function validators.equal(...)
     end
 end
 function validators.match(pattern, init)
-    init = init or 1
     return function(value)
         return match(value, pattern, init) ~= nil
     end
@@ -67,19 +66,19 @@ function validators.tonumber(base)
         return nbr ~= nil, nbr
     end
 end
-return setmetatable({}, { __index = function(_, k)
+return setmetatable({ validators = validators }, { __index = function(_, k)
     assert(validators[k], "Invalid validator '" .. k .. "'")
     return function(...)
-        return setmetatable({ chain = {{ validators[k](...), k }}}, {
+        return setmetatable({ validators = {{ validators[k](...), k }}}, {
             __index = function(t, k)
                 assert(validators[k], "Invalid validator '" .. k .. "'")
                 return function(...)
-                    t.chain[#t.chain+1] = { validators[k](...), k }
+                    t.validators[#t.validators+1] = { validators[k](...), k }
                     return t
                 end
             end,
             __call = function(t, value)
-                for _, v in ipairs(t.chain) do
+                for _, v in ipairs(t.validators) do
                     local valid, val = v[1](value)
                     if not valid  then return false, v[2] end
                     if val ~= nil then value = val end
@@ -88,4 +87,4 @@ return setmetatable({}, { __index = function(_, k)
             end
         })
     end
-end }), validators
+end })
