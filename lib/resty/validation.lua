@@ -31,7 +31,13 @@ function validators.len(min, max)
     if not max then max = min end
     return function(value)
         local l = #value
-        return l >= min and l <= max
+        return type(l) == "number" and l >= min and l <= max
+    end
+end
+function validators.utf8len(min, max, i)
+    return function(value)
+        local l = utf8.len(value, i)
+        return type(l) == "number" and l >= min and l <= max
     end
 end
 function validators.equal(...)
