@@ -35,6 +35,7 @@ function validators.len(min, max)
     end
 end
 function validators.utf8len(min, max, i)
+    if not max then max = min end
     return function(value)
         local l = utf8.len(value, i)
         return type(l) == "number" and l >= min and l <= max
