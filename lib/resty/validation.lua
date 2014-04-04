@@ -5,6 +5,30 @@ local ipairs = ipairs
 local assert = assert
 local match = string.match
 local type = type
+local function len(func, ...)
+    local args = {...}
+    local min, max
+    if #args == 1 then
+        if type(args[1]) == "table" then
+            if args[1].min then min = args[1].min end
+            if args[1].max then max = args[1].max end
+        else
+            min = args[1]
+            max = args[1]
+        end
+    else
+        min = args[1]
+        max = args[2]
+    end
+    return function(value)
+        local l
+        if func then l = func(value) else l = #value end
+        if type(l)  ~= "number" then return false end
+        if min and l < min      then return false end
+        if max and l > max      then return false end
+        return true
+    end
+end
 local validators = {}
 function validators.type(t)
     return function(value)
@@ -27,19 +51,11 @@ function validators.between(min, max)
         return value >= min and value <= max
     end
 end
-function validators.len(min, max)
-    if not max then max = min end
-    return function(value)
-        local l = #value
-        return type(l) == "number" and l >= min and l <= max
-    end
+function validators.len(...)
+    return len(nil, ...)
 end
-function validators.utf8len(min, max, i)
-    if not max then max = min end
-    return function(value)
-        local l = utf8.len(value, i)
-        return type(l) == "number" and l >= min and l <= max
-    end
+function validators.utf8len(...)
+    return len(utf8.len, ...)
 end
 function validators.equal(...)
     local values = {...}
@@ -66,25 +82,34 @@ function validators.tonumber(base)
         return nbr ~= nil, nbr
     end
 end
-return setmetatable({ validators = validators }, { __index = function(_, k)
+local mt = {}
+function mt.__index(t, k)
     assert(validators[k], "Invalid validator '" .. k .. "'")
     return function(...)
-        return setmetatable({ validators = {{ validators[k](...), k }}}, {
-            __index = function(t, k)
-                assert(validators[k], "Invalid validator '" .. k .. "'")
-                return function(...)
-                    t.validators[#t.validators+1] = { validators[k](...), k }
-                    return t
-                end
-            end,
-            __call = function(t, value)
-                for _, v in ipairs(t.validators) do
-                    local valid, val = v[1](value)
-                    if not valid  then return false, v[2] end
-                    if val ~= nil then value = val end
-                end
-                return true, nil
-            end
-        })
+        t.validators[#t.validators+1] = { validators[k](...), k }
+        return t
     end
-end })
+end
+function mt.__call(t, value)
+    for _, v in ipairs(t.validators) do
+        local valid, val = v[1](value)
+        if not valid  then return false, v[2] end
+        if val ~= nil then value = val end
+    end
+    return true, nil
+end
+local validation = setmetatable({ validators = validators }, {
+    __index = function(_, k)
+        assert(validators[k], "Invalid validator '" .. k .. "'")
+        return function(...)
+            return setmetatable({ validators = {{ validators[k](...), k }}}, mt)
+        end
+    end
+})
+function validation.new(values)
+    --for k,v in pairs(values) do
+    --end
+end
+return validation
+
+
