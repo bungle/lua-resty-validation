@@ -91,12 +91,12 @@ function mt.__index(t, k)
     end
 end
 function mt.__call(t, value)
-    for _, v in ipairs(t.validators) do
-        local valid, val = v[1](value)
-        if not valid  then return false, v[2] end
-        if val ~= nil then value = val end
+    for _, validator in ipairs(t.validators) do
+        local valid, v = validator[1](value)
+        if not valid  then return false, validator[2] end
+        if v ~= nil then value = v end
     end
-    return true, nil
+    return true, value
 end
 local validation = setmetatable({ validators = validators }, {
     __index = function(_, k)
@@ -107,9 +107,33 @@ local validation = setmetatable({ validators = validators }, {
     end
 })
 function validation.new(values)
-    --for k,v in pairs(values) do
-    --end
+    return setmetatable({
+        valid = true,
+        invalid = true
+    }, {
+        __index = function(f, k)
+            f[k] = {
+                valid   = true,
+                invalid = false,
+                input = values[k],
+                value = values[k],
+                validate = function(t, ...)
+                    for _, validator in ipairs({...}) do
+                        local valid, v = validator(t.value)
+                        if not valid then
+                            f.valid = false
+                            t.valid = false
+                            f.invalid = true
+                            t.invalid = true
+                            return false, v
+                        end
+                        if v ~= nil then t.value = v end
+                    end
+                    return true, t.value
+                end
+            }
+            return f[k]
+        end
+    })
 end
 return validation
-
-
