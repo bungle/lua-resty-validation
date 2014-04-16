@@ -4,6 +4,8 @@ local tonumber = tonumber
 local ipairs = ipairs
 local assert = assert
 local match = string.match
+local lower = string.lower
+local upper = string.upper
 local type = type
 local function len(func, ...)
     local args = {...}
@@ -80,6 +82,28 @@ function validators.tonumber(base)
     return function(value)
         local nbr = tonumber(value, base)
         return nbr ~= nil, nbr
+    end
+end
+function validators.tonumber(base)
+    return function(value)
+        local nbr = tonumber(value, base)
+        return nbr ~= nil, nbr
+    end
+end
+function validators.lower()
+    return function(value)
+        if type(value) == "string" or type(value) == "number" then
+            return true, lower(value)
+        end
+        return false
+    end
+end
+function validators.upper()
+    return function(value)
+        if type(value) == "string" or type(value) == "number" then
+            return true, upper(value)
+        end
+        return false
     end
 end
 local mt = {}
