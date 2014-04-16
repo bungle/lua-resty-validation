@@ -7,10 +7,8 @@
 ```lua
 local validation = require "resty.validation"
 
--- valid = true, e = 5
-local valid, e = validation.type("number").between(0, 9)(5)
--- valid = false, e = "between"
-local valid, e = validation.type("number").between(0, 9)(50)
+local valid, e = validation.type("number").between(0, 9)(5)  -- valid = true,  e = 5
+local valid, e = validation.type("number").between(0, 9)(50) -- valid = false, e = "between"
 
 -- Validators can also be reused
 local smallnumber = validation.type("number").between(0, 9)
