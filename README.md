@@ -15,7 +15,7 @@ local smallnumber = validation.type("number").between(0, 9)
 local valid, e = smallnumber(5)  -- valid = true,  e = 5
 local valid, e = smallnumber(50) -- valid = false, e = "between"
 
--- Validators can do filtering (i.e. modify the validated value)
+-- Validators can do filtering (i.e. modify the value being validated)
 -- valid = true, s = "HELLO WORLD!"
 local valid, s = validation.type("string").upper()("hello world!")
 
