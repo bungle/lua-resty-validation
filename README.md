@@ -32,8 +32,8 @@ validation.validators.reverse = function()
 end
 
 -- And then use it
-local valid, e validation.reverse()("ABC") -- valid = true,  e = "CBA"
-local valid, e validation.reverse()(5)     -- valid = false, e = "reverse"
+local valid, e = validation.reverse()("ABC") -- valid = true,  e = "CBA"
+local valid, e = validation.reverse()(5)     -- valid = false, e = "reverse"
 
 -- You can also group validate many values
 local form = validation.new{ name = "Eddie Vedder", number = 10 }
