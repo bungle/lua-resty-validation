@@ -133,7 +133,7 @@ local validation = setmetatable({ validators = validators }, {
 function validation.new(values)
     return setmetatable({
         valid = true,
-        invalid = true
+        invalid = false
     }, {
         __index = function(f, k)
             f[k] = {
