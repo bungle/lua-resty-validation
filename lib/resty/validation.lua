@@ -145,10 +145,11 @@ function validation.new(values)
                     for _, validator in ipairs({...}) do
                         local valid, v = validator(t.value)
                         if not valid then
-                            f.valid = false
+                            t.error = v
                             t.valid = false
-                            f.invalid = true
+                            f.valid = false
                             t.invalid = true
+                            f.invalid = true
                             return false, v
                         end
                         if v ~= nil then t.value = v end
