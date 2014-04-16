@@ -36,14 +36,14 @@ local valid, e = validation.reverse()("ABC") -- valid = true,  e = "CBA"
 local valid, e = validation.reverse()(5)     -- valid = false, e = "reverse"
 
 -- You can also group validate many values
-local form = validation.new{ name = "Eddie Vedder", number = 10 }
-form.name:validate(validation.type("string").len{ min = 5 })
+local form = validation.new{ artist = "Eddie Vedder", number = 10 }
+form.artist:validate(validation.type("string").len{ min = 5 })
 form.number:validate(validation.equal(10))
 
 if form.valid then
   print("all form fields are valid")
 else
-  print(  form.name.valid,   form.name.input  , form.name.value,   form.name.error,   form.name.invalid)
+  print(form.artist.valid, form.artist.input, form.artist.value, form.artist.error, form.artist.invalid)
   print(form.number.valid, form.number.input, form.number.value, form.number.error, form.number.invalid)
 end
 ```
