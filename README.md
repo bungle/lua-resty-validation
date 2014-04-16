@@ -21,7 +21,7 @@ local valid, e = smallnumber(50) -- valid = false, e = "between"
 -- valid = true, s = "HELLO WORLD!"
 local valid, s = validation.type("string").upper()("hello world!")
 
--- You may extend the validation library with your own validators and filters
+-- You may extend the validation library with your own validators and filters...
 validation.validators.reverse = function() 
   return function(value)
     if type(value) == "string" then
@@ -31,7 +31,7 @@ validation.validators.reverse = function()
   end
 end
 
--- And then use it
+-- ... and then use it
 local valid, e = validation.reverse()("ABC") -- valid = true,  e = "CBA"
 local valid, e = validation.reverse()(5)     -- valid = false, e = "reverse"
 
