@@ -117,7 +117,7 @@ end
 function mt.__call(t, value)
     for _, validator in ipairs(t.validators) do
         local valid, v = validator[1](value)
-        if not valid  then return false, validator[2] end
+        if not valid then return false, validator[2] end
         if v ~= nil then value = v end
     end
     return true, value
