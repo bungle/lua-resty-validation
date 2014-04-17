@@ -7,17 +7,17 @@
 ```lua
 local validation = require "resty.validation"
 
-local valid, e = validation.type("number").between(0, 9)(5)  -- valid = true,  e = 5
-local valid, e = validation.type("number").between(0, 9)(50) -- valid = false, e = "between"
+local valid, e = validation.number.between(0, 9)(5)  -- valid = true,  e = 5
+local valid, e = validation.number.between(0, 9)(50) -- valid = false, e = "between"
 
 -- Validators can also be reused
-local smallnumber = validation.type("number").between(0, 9)
+local smallnumber = validation.number.between(0, 9)
 local valid, e = smallnumber(5)  -- valid = true,  e = 5
 local valid, e = smallnumber(50) -- valid = false, e = "between"
 
 -- Validators can do filtering (i.e. modify the value being validated)
 -- valid = true, s = "HELLO WORLD!"
-local valid, s = validation.type("string").upper()("hello world!")
+local valid, s = validation.string.upper()("hello world!")
 
 -- You may extend the validation library with your own validators and filters...
 validation.validators.reverse = function() 
@@ -35,7 +35,7 @@ local valid, e = validation.reverse()(5)     -- valid = false, e = "reverse"
 
 -- You can also group validate many values
 local form = validation.new{ artist = "Eddie Vedder", number = 10 }
-form.artist:validate(validation.type("string").len{ min = 5 })
+form.artist:validate(validation.string.len{ min = 5 })
 form.number:validate(validation.equal(10))
 
 if form.valid then
