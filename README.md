@@ -39,7 +39,7 @@ form.artist:validate(validation.type("string").len{ min = 5 })
 form.number:validate(validation.equal(10))
 
 if form.valid then
-  print("all form fields are valid")
+  print("all the form fields are valid")
 else
   print(form.artist.valid, form.artist.input, form.artist.value, form.artist.error, form.artist.invalid)
   print(form.number.valid, form.number.input, form.number.value, form.number.error, form.number.invalid)
