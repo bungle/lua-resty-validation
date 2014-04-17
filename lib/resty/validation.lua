@@ -133,30 +133,51 @@ local validation = setmetatable({ validators = validators }, {
 function validation.new(values)
     return setmetatable({
         valid = true,
-        invalid = false
+        invalid = false,
+        validate = function(self)
+            local errors = {}
+            self.valid   = true
+            self.invalid = false
+            for _, field in pairs(self) do
+                if type(field) == "table" and field.invalid == true then
+                    self.valid        = false
+                    self.invalid      = true
+                    errors[#errors+1] = field
+                end
+            end
+            if self.valid then
+                return true, nil
+            else
+                return false, errors
+            end
+        end
     }, {
         __index = function(f, k)
-            f[k] = {
-                valid   = true,
-                invalid = false,
-                input = values[k],
-                value = values[k],
+            f[k] = setmetatable({
+                name     = k,
+                valid    = true,
+                invalid  = false,
+                input    = values[k],
+                value    = values[k],
                 validate = function(t, ...)
                     for _, validator in ipairs({...}) do
                         local valid, v = validator(t.value)
                         if not valid then
-                            t.error = v
-                            t.valid = false
-                            f.valid = false
+                            t.error   = v
+                            t.valid   = false
                             t.invalid = true
-                            f.invalid = true
                             return false, v
                         end
                         if v ~= nil then t.value = v end
                     end
                     return true, t.value
                 end
-            }
+            }, {
+                __tostring = function(self)
+                    return self.value
+                end
+            })
+            f:validate()
             return f[k]
         end
     })
