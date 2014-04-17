@@ -20,7 +20,7 @@ local valid, e = smallnumber(50) -- valid = false, e = "between"
 local valid, s = validation.string.upper()("hello world!")
 
 -- You may extend the validation library with your own validators and filters...
-validation.validators.reverse = function() 
+validation.validators.factory.reverse = function() 
   return function(value)
     if type(value) == "string" then
       return true, string.reverse(value)
