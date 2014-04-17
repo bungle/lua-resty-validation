@@ -140,8 +140,10 @@ function validation.new(values)
             self.invalid = false
             for _, field in pairs(self) do
                 if type(field) == "table" and field.invalid == true then
-                    self.valid        = false
-                    self.invalid      = true
+                    if self.valid then
+                        self.valid   = false
+                        self.invalid = true
+                    end
                     errors[#errors+1] = field
                 end
             end
