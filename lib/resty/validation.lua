@@ -106,8 +106,21 @@ function validators.upper()
         return false
     end
 end
+validators.types = {
+    ["nil"]      = validators.type("nil"),
+    ["boolean"]  = validators.type("boolean"),
+    ["number"]   = validators.type("number"),
+    ["string"]   = validators.type("string"),
+    ["userdata"] = validators.type("userdata"),
+    ["function"] = validators.type("function"),
+    ["thread"]   = validators.type("thread")
+}
 local mt = {}
 function mt.__index(t, k)
+    if validators.types[k] then
+        t.validators[#t.validators+1] = { validators.types[k], k }
+        return t
+    end
     assert(validators[k], "Invalid validator '" .. k .. "'")
     return function(...)
         t.validators[#t.validators+1] = { validators[k](...), k }
@@ -124,6 +137,9 @@ function mt.__call(t, value)
 end
 local validation = setmetatable({ validators = validators }, {
     __index = function(_, k)
+        if validators.types[k] then
+            return setmetatable({ validators = {{ validators.types[k], k }}}, mt)
+        end
         assert(validators[k], "Invalid validator '" .. k .. "'")
         return function(...)
             return setmetatable({ validators = {{ validators[k](...), k }}}, mt)
