@@ -41,7 +41,9 @@ form.number:validate(validation.equal(10))
 if form.valid then
   print("all the form fields are valid")
 else
-  print(form.artist.valid, form.artist.input, form.artist.value, form.artist.error, form.artist.invalid)
-  print(form.number.valid, form.number.input, form.number.value, form.number.error, form.number.invalid)
+  print(form.artist.name, form.artist.valid, form.artist.input,
+       form.artist.value, form.artist.error, form.artist.invalid)
+  print(form.number.name, form.number.valid, form.number.input,
+        form.number.value, form.number.error, form.number.invalid)
 end
 ```
