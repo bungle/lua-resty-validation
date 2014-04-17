@@ -6,6 +6,7 @@ local assert = assert
 local match = string.match
 local lower = string.lower
 local upper = string.upper
+local pairs = pairs
 local type = type
 local function len(func, ...)
     local args = {...}
@@ -76,12 +77,6 @@ end
 function validators.tostring()
     return function(value)
         return true, tostring(value)
-    end
-end
-function validators.tonumber(base)
-    return function(value)
-        local nbr = tonumber(value, base)
-        return nbr ~= nil, nbr
     end
 end
 function validators.tonumber(base)
