@@ -32,35 +32,35 @@ local function len(func, ...)
         return true
     end
 end
-local validators = {}
-function validators.type(t)
+local validators = { factory = {} }
+function validators.factory.type(t)
     return function(value)
         return type(value) == t
     end
 end
-function validators.min(min)
+function validators.factory.min(min)
     return function(value)
         return value >= min
     end
 end
-function validators.max(max)
+function validators.factory.max(max)
     return function(value)
         return value <= max
     end
 end
-function validators.between(min, max)
+function validators.factory.between(min, max)
     if not max then max = min end
     return function(value)
         return value >= min and value <= max
     end
 end
-function validators.len(...)
+function validators.factory.len(...)
     return len(nil, ...)
 end
-function validators.utf8len(...)
+function validators.factory.utf8len(...)
     return len(utf8.len, ...)
 end
-function validators.equal(...)
+function validators.factory.equal(...)
     local values = {...}
     return function(value)
         for _,v in ipairs(values) do
@@ -69,23 +69,23 @@ function validators.equal(...)
         return false
     end
 end
-function validators.match(pattern, init)
+function validators.factory.match(pattern, init)
     return function(value)
         return match(value, pattern, init) ~= nil
     end
 end
-function validators.tostring()
+function validators.factory.tostring()
     return function(value)
         return true, tostring(value)
     end
 end
-function validators.tonumber(base)
+function validators.factory.tonumber(base)
     return function(value)
         local nbr = tonumber(value, base)
         return nbr ~= nil, nbr
     end
 end
-function validators.lower()
+function validators.factory.lower()
     return function(value)
         if type(value) == "string" or type(value) == "number" then
             return true, lower(value)
@@ -93,7 +93,7 @@ function validators.lower()
         return false
     end
 end
-function validators.upper()
+function validators.factory.upper()
     return function(value)
         if type(value) == "string" or type(value) == "number" then
             return true, upper(value)
@@ -101,24 +101,22 @@ function validators.upper()
         return false
     end
 end
-validators.types = {
-    ["nil"]      = validators.type("nil"),
-    ["boolean"]  = validators.type("boolean"),
-    ["number"]   = validators.type("number"),
-    ["string"]   = validators.type("string"),
-    ["userdata"] = validators.type("userdata"),
-    ["function"] = validators.type("function"),
-    ["thread"]   = validators.type("thread")
-}
+validators["nil"]      = validators.factory.type("nil")
+validators["boolean"]  = validators.factory.type("boolean")
+validators["number"]   = validators.factory.type("number")
+validators["string"]   = validators.factory.type("string")
+validators["userdata"] = validators.factory.type("userdata")
+validators["function"] = validators.factory.type("function")
+validators["thread"]   = validators.factory.type("thread")
 local mt = {}
 function mt.__index(t, k)
-    if validators.types[k] then
-        t.validators[#t.validators+1] = { validators.types[k], k }
+    if validators[k] then
+        t.validators[#t.validators+1] = { validators[k], k }
         return t
     end
-    assert(validators[k], "Invalid validator '" .. k .. "'")
+    assert(validators.factory[k], "Invalid validator '" .. k .. "'")
     return function(...)
-        t.validators[#t.validators+1] = { validators[k](...), k }
+        t.validators[#t.validators+1] = { validators.factory[k](...), k }
         return t
     end
 end
@@ -132,12 +130,12 @@ function mt.__call(t, value)
 end
 local validation = setmetatable({ validators = validators }, {
     __index = function(_, k)
-        if validators.types[k] then
-            return setmetatable({ validators = {{ validators.types[k], k }}}, mt)
+        if validators[k] then
+            return setmetatable({ validators = {{ validators[k], k }}}, mt)
         end
-        assert(validators[k], "Invalid validator '" .. k .. "'")
+        assert(validators.factory[k], "Invalid validator '" .. k .. "'")
         return function(...)
-            return setmetatable({ validators = {{ validators[k](...), k }}}, mt)
+            return setmetatable({ validators = {{ validators.factory[k](...), k }}}, mt)
         end
     end
 })
