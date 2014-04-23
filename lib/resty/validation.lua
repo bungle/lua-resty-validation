@@ -34,8 +34,14 @@ local function len(func, ...)
 end
 local validators = { factory = {} }
 function validators.factory.type(t)
-    return function(value)
-        return type(value) == t
+    if t == 'integer' or t == 'float' then
+        return function(value)
+            return math.type(value) == t
+        end
+    else
+        return function(value)
+            return type(value) == t
+        end
     end
 end
 function validators.factory.min(min)
@@ -108,6 +114,8 @@ validators["string"]   = validators.factory.type("string")
 validators["userdata"] = validators.factory.type("userdata")
 validators["function"] = validators.factory.type("function")
 validators["thread"]   = validators.factory.type("thread")
+validators["integer"]  = validators.factory.type("integer")
+validators["float"]    = validators.factory.type("float")
 local mt = {}
 function mt.__index(t, k)
     if validators[k] then
