@@ -34,9 +34,13 @@ local function len(func, ...)
 end
 local validators = { factory = {} }
 function validators.factory.type(t)
-    if t == 'integer' or t == 'float' then
+    if t == "integer" or t == "float" then
         return function(value)
             return math.type(value) == t
+        end
+    elseif t == "file" then
+        return function(value)
+            return io.type(value) == t
         end
     else
         return function(value)
@@ -116,6 +120,7 @@ validators["function"] = validators.factory.type("function")
 validators["thread"]   = validators.factory.type("thread")
 validators["integer"]  = validators.factory.type("integer")
 validators["float"]    = validators.factory.type("float")
+validators["file"]     = validators.factory.type("file")
 local mt = {}
 function mt.__index(t, k)
     if validators[k] then
