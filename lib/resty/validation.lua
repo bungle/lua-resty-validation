@@ -54,6 +54,7 @@ function validators.factory.max(max)
 end
 function validators.factory.between(min, max)
     if not max then max = min end
+    if max < min then min, max = max, min end
     return function(value)
         return value >= min and value <= max
     end
