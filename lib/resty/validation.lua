@@ -9,27 +9,20 @@ local upper = string.upper
 local pairs = pairs
 local gsub = string.gsub
 local type = type
-local function len(func, ...)
-    local args = {...}
-    local min, max
-    if #args == 1 then
-        if type(args[1]) == "table" then
-            if args[1].min then min = args[1].min end
-            if args[1].max then max = args[1].max end
-        else
-            min = args[1]
-            max = args[1]
-        end
+local function len(func, min, max)
+    local mn, mx
+    if type(min) == "table" then
+        if min.min then mn = min.min end
+        if min.max then mx = min.max end
     else
-        min = args[1]
-        max = args[2]
+        mn, mx = min, max
     end
     return function(value)
         local l
         if func then l = func(value) else l = #value end
         if type(l)  ~= "number" then return false end
-        if min and l < min      then return false end
-        if max and l > max      then return false end
+        if mn and l < mn        then return false end
+        if mx and l > mx        then return false end
         return true
     end
 end
@@ -65,17 +58,20 @@ function validators.factory.between(min, max)
         return value >= min and value <= max
     end
 end
-function validators.factory.len(...)
-    return len(nil, ...)
+function validators.factory.len(min, max)
+    return len(nil, min, max)
 end
-function validators.factory.utf8len(...)
-    return len(utf8.len, ...)
+function validators.factory.utf8len(min, max)
+    return len(utf8.len, min, max)
 end
-function validators.factory.equal(...)
-    local values = {...}
+function validators.factory.equal(values)
     return function(value)
-        for _,v in ipairs(values) do
-            if v == value then return true end
+        if type(values) == "table" then
+            for _,v in ipairs(values) do
+                if v == value then return true end
+            end
+        else
+            return value == values
         end
         return false
     end
