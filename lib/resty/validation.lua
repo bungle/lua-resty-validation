@@ -20,9 +20,9 @@ local function len(func, min, max)
     return function(value)
         local l
         if func then l = func(value) else l = #value end
-        if type(l)  ~= "number" then return false end
-        if mn and l < mn        then return false end
-        if mx and l > mx        then return false end
+        if type(l) ~= "number" then return false end
+        if mn and l < mn       then return false end
+        if mx and l > mx       then return false end
         return true
     end
 end
