@@ -7,6 +7,7 @@ local match = string.match
 local lower = string.lower
 local upper = string.upper
 local pairs = pairs
+local gsub = string.gsub
 local type = type
 local function len(func, ...)
     local args = {...}
@@ -107,6 +108,35 @@ function validators.factory.upper()
     return function(value)
         if type(value) == "string" or type(value) == "number" then
             return true, upper(value)
+        end
+        return false
+    end
+end
+function validators.factory.trim(pattern)
+    pattern = pattern or "%s+"
+    local l = "^" .. pattern
+    local r = pattern .. "$"
+    return function(value)
+        if type(value) == "string" or type(value) == "number" then
+            return true, (gsub(value, r, ""):gsub(l, ""))
+        end
+        return false
+    end
+end
+function validators.factory.ltrim(pattern)
+    pattern = "^" .. (pattern or "%s+")
+    return function(value)
+        if type(value) == "string" or type(value) == "number" then
+            return true, (gsub(value, pattern, ""))
+        end
+        return false
+    end
+end
+function validators.factory.rtrim(pattern)
+    pattern = (pattern or "%s+") .. "$"
+    return function(value)
+        if type(value) == "string" or type(value) == "number" then
+            return true, (gsub(value, pattern, ""))
         end
         return false
     end
