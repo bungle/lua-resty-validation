@@ -59,6 +59,13 @@ function validators.factory.between(min, max)
         return value >= min and value <= max
     end
 end
+function validators.factory.outside(min, max)
+    if not max then max = min end
+    if max < min then min, max = max, min end
+    return function(value)
+        return value < min and value > max
+    end
+end
 function validators.factory.len(min, max)
     return len(nil, min, max)
 end
@@ -71,10 +78,18 @@ function validators.factory.equal(values)
             for _,v in ipairs(values) do
                 if v == value then return true end
             end
-        else
-            return value == values
         end
-        return false
+        return value == values
+    end
+end
+function validators.factory.unequal(values)
+    return function(value)
+        if type(values) == "table" then
+            for _,v in ipairs(values) do
+                if v == value then return false end
+            end
+        end
+        return value ~= values
     end
 end
 function validators.factory.match(pattern, init)
