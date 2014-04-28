@@ -97,6 +97,11 @@ function validators.factory.match(pattern, init)
         return match(value, pattern, init) ~= nil
     end
 end
+function validators.factory.unmatch(pattern, init)
+    return function(value)
+        return match(value, pattern, init) == nil
+    end
+end
 function validators.factory.tostring()
     return function(value)
         return true, tostring(value)
