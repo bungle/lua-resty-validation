@@ -203,10 +203,11 @@ local validation = setmetatable({ validators = validators }, {
 })
 function validation.new(values)
     return setmetatable({
-        valid = true,
+        valid   = true,
         invalid = false,
+        errors  = {},
         validate = function(self)
-            local errors = {}
+            self.errors = {}
             self.valid   = true
             self.invalid = false
             for _, field in pairs(self) do
@@ -215,14 +216,10 @@ function validation.new(values)
                         self.valid   = false
                         self.invalid = true
                     end
-                    errors[#errors+1] = field
+                    self.errors[#self.errors+1] = field
                 end
             end
-            if self.valid then
-                return true, nil
-            else
-                return false, errors
-            end
+            return self.valid, self.errors
         end
     }, {
         __index = function(f, k)
