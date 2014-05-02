@@ -159,11 +159,13 @@ function validators.factory.rtrim(pattern)
     end
 end
 validators["nil"]      = validators.factory.type("nil")
+validators["null"]     = validators.factory.type("nil")
 validators["boolean"]  = validators.factory.type("boolean")
 validators["number"]   = validators.factory.type("number")
 validators["string"]   = validators.factory.type("string")
 validators["userdata"] = validators.factory.type("userdata")
 validators["function"] = validators.factory.type("function")
+validators["func"]     = validators.factory.type("function")
 validators["thread"]   = validators.factory.type("thread")
 validators["integer"]  = validators.factory.type("integer")
 validators["float"]    = validators.factory.type("float")
