@@ -71,14 +71,14 @@ Type validators can be used to validate the type of the validated value. These v
 
 ```lua
 local validation = require "resty.validation"
-validation.null(nil)
-validation.boolean(true)
-validation.number(5.2)
-validation.string('Hello, World!')
-validation.integer(10)
-validation.float(math.pi)
+local ok, e = validation.null(nil)
+local ok, e = validation.boolean(true)
+local ok, e = validation.number(5.2)
+local ok, e = validation.string('Hello, World!')
+local ok, e = validation.integer(10)
+local ok, e = validation.float(math.pi)
 local f = assert(io.open('filename.txt', "r"))
-validation.file(f)
+local ok, e = validation.file(f)
 ```
 
 ## License
