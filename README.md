@@ -48,6 +48,25 @@ else
 end
 ```
 
+## Built-in Validators
+
+`lua-resty-validation` comes with several built-in validators, and the project is open for contributions of more validators.
+
+### Type Validators
+
+Type validators can be used to validate the type of the validated value. These validators are parameter-less validators:
+
+* nil or null (as the nil is a reserved keyword in Lua)
+* boolean
+* number
+* string
+* userdata
+* function or func (as the function is a reserver keyword in Lua)
+* thread
+* integer (works only with Lua > 5.3, math.type(nbr) == 'integer')
+* float (works only with Lua > 5.3,   math.type(nbr) == 'float')
+* file (io.type(value) == 'file)
+
 ## License
 
 `lua-resty-validation` uses two clause BSD license.
