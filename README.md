@@ -93,7 +93,7 @@ Validation factory consist of different validators and filters used to validate 
 * `len(min[, max = min])`, validates that the length (`#`) of the value is exactly `min`, at least `min`, at most `max` or between `min` and `max`
 * `utf8len(min[, max = min])`, validates that the length (`utf8.len`) of the value is exactly `min`, at least `min`, at most `max` or between `min` and `max`
 * `equal(values)`, validates that the value is exactly something or one of the values
-* `unequal(values)`, validates that the value isnot exactly something or one of the values.
+* `unequal(values)`, validates that the value is not exactly something or one of the values.
 * `match(pattern[, init])`, validates that the value matches (`string.match`) the pattern
 * `unmatch(pattern[, init])`, validates that the value does not match (`string.match`) the pattern
 * `tostring()`, converts value to string
@@ -103,6 +103,17 @@ Validation factory consist of different validators and filters used to validate 
 * `trim()`, trims whitespace from left and right
 * `ltrim()`, trims whitespace from left
 * `rtrim()`, trims whitespace from right
+
+#### Examples
+
+```lua
+local validation = require "resty.validation"
+local ok, e = validation.string.trim().len(8)("my value")
+local ok, e = validation.string.trim().len{ max = 8}("my value")
+local ok, e = validation.number.between(1, 100).outside(40, 50)(90)
+local ok, e = validation.equal(10)(10)
+local ok, e = validation.equal{10, 20, 30, 40, 50 }(30)
+```
 
 ## License
 
