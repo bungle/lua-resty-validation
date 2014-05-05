@@ -56,16 +56,16 @@ end
 
 Type validators can be used to validate the type of the validated value. These validators are parameter-less validators:
 
-* nil or null (as the nil is a reserved keyword in Lua)
-* boolean
-* number
-* string
-* userdata
-* function or func (as the function is a reserver keyword in Lua)
-* thread
-* integer (works only with Lua > 5.3, math.type(nbr) == 'integer')
-* float (works only with Lua > 5.3,   math.type(nbr) == 'float')
-* file (io.type(value) == 'file)
+* `nil` or `null` (as the nil is a reserved keyword in Lua)
+* `boolean`
+* `number`
+* `string`
+* `userdata`
+* `function` or `func` (as the function is a reserver keyword in Lua)
+* `thread`
+* `integer` (works only with Lua > 5.3, `math.type(nbr) == 'integer'`)
+* `float` (works only with Lua > 5.3,   `math.type(nbr) == 'float'`)
+* `file` (`io.type(value) == 'file'`)
 
 ## License
 
@@ -89,4 +89,4 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
 DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES`
