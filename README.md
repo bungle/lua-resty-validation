@@ -81,6 +81,29 @@ local f = assert(io.open('filename.txt', "r"))
 local ok, e = validation.file(f)
 ```
 
+### Validation Factory Validators
+
+Validation factory consist of different validators and filters used to validate or filter the validated value:
+
+* `type(t)`   - Validates that the valus is of type `t` (see Type Validators)
+* `min(min)`  - Validates that the value is at least `min` (`>=`)
+* `max(max)`  - Validates that the value is at least `min` (`>=`)
+* `between(min[, max = min])`
+* `outside(min[, max = min])`
+* `len(min[, max = min])`
+* `utf8len(min[, max = min])`
+* `equal(values)`
+* `unequal(values)`
+* `match(pattern[, init])`
+* `unmatch(pattern[, init])`
+* `tostring()`
+* `tonumber([base])`
+* `lower()`
+* `upper()`
+* `trim()`
+* `ltrim()`
+* `rtrim()`
+
 ## License
 
 `lua-resty-validation` uses two clause BSD license.
