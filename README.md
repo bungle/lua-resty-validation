@@ -112,7 +112,7 @@ local ok, e = validation.string.trim().len(8)("my value")
 local ok, e = validation.string.trim().len{ max = 8}("my value")
 local ok, e = validation.number.between(1, 100).outside(40, 50)(90)
 local ok, e = validation.equal(10)(10)
-local ok, e = validation.equal{10, 20, 30, 40, 50 }(30)
+local ok, e = validation.equal{ 10, 20, 30, 40, 50 }(30)
 ```
 
 ## License
