@@ -85,24 +85,24 @@ local ok, e = validation.file(f)
 
 Validation factory consist of different validators and filters used to validate or filter the validated value:
 
-* `type(t)`   - Validates that the valus is of type `t` (see Type Validators)
-* `min(min)`  - Validates that the value is at least `min` (`>=`)
-* `max(max)`  - Validates that the value is at least `min` (`>=`)
-* `between(min[, max = min])`
-* `outside(min[, max = min])`
-* `len(min[, max = min])`
-* `utf8len(min[, max = min])`
-* `equal(values)`
-* `unequal(values)`
-* `match(pattern[, init])`
-* `unmatch(pattern[, init])`
-* `tostring()`
-* `tonumber([base])`
-* `lower()`
-* `upper()`
-* `trim()`
-* `ltrim()`
-* `rtrim()`
+* `type(t)`, validates that the value is of type `t` (see Type Validators)
+* `min(min)`, validates that the value is at least `min` (`>=`)
+* `max(max)`, validates that the value is at most `max` (`<=`)
+* `between(min[, max = min])`, validates that the value is between `min` and `max`
+* `outside(min[, max = min])`, validates that the value is not between `min` and `max`
+* `len(min[, max = min])`, validates that the length (`#`) of the value is exactly `min`, at least `min`, at most `max` or between `min` and `max`
+* `utf8len(min[, max = min])`, validates that the length (`utf8.len`) of the value is exactly `min`, at least `min`, at most `max` or between `min` and `max`
+* `equal(values)`, validates that the value is exactly something or one of the values
+* `unequal(values)`, validates that the value isnot exactly something or one of the values.
+* `match(pattern[, init])`, validates that the value matches (`string.match`) the pattern
+* `unmatch(pattern[, init])`, validates that the value does not match (`string.match`) the pattern
+* `tostring()`, converts value to string
+* `tonumber([base])`, converts value to number
+* `lower()`, converts value to lower case
+* `upper()`, converts value to upper case
+* `trim()`, trims whitespace from left and right
+* `ltrim()`, trims whitespace from left
+* `rtrim()`, trims whitespace from right
 
 ## License
 
