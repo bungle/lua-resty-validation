@@ -67,6 +67,20 @@ Type validators can be used to validate the type of the validated value. These v
 * `float` (works only with Lua > 5.3,   `math.type(nbr) == 'float'`)
 * `file` (`io.type(value) == 'file'`)
 
+#### Example
+
+```lua
+local validation = require "resty.validation"
+validation.null(nil)
+validation.boolean(true)
+validation.number(5.2)
+validation.string('Hello, World!')
+validation.integer(10)
+validation.float(math.pi)
+local f = assert(io.open('filename.txt', "r"))
+validation.file(f)
+```
+
 ## License
 
 `lua-resty-validation` uses two clause BSD license.
