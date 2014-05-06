@@ -5,22 +5,24 @@ local base64enc    = ngx.encode_base64
 local base64dec    = ngx.decode_base64
 local crc32short   = ngx.crc32_short
 local crc32long    = ngx.crc32_long
-validation.validators.factory.escape_uri = function()
+local validators   = validation.validators
+local factory      = validators.factory
+function factory.escape_uri()
     return function(value)
         return true, escape_uri(value)
     end
 end
-validation.validators.factory.unescape_uri = function()
+function factory.unescape_uri()
     return function(value)
         return true, unescape_uri(value)
     end
 end
-validation.validators.factory.base64enc = function()
+function factory.base64enc()
     return function(value)
         return true, base64enc(value)
     end
 end
-validation.validators.factory.base64dec = function()
+function factory.base64dec()
     return function(value)
         local decoded = base64dec(value)
         if decoded == nil then
@@ -29,17 +31,17 @@ validation.validators.factory.base64dec = function()
         return true, decoded
     end
 end
-validation.validators.factory.crc32short = function()
+function factory.crc32short()
     return function(value)
         return true, crc32short(value)
     end
 end
-validation.validators.factory.crc32long = function()
+function factory.crc32long()
     return function(value)
         return true, crc32long(value)
     end
 end
-validation.validators.factory.crc32 = function()
+function factory.crc32()
     return function(value)
         if #value < 61 then
             return true, crc32short(value)

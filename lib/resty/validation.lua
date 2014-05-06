@@ -26,8 +26,7 @@ local function len(func, min, max)
         return true
     end
 end
-local validators = { factory = {} }
-function validators.factory.type(t)
+local function istype(t)
     if t == "integer" or t == "float" then
         return function(value)
             return math.type(value) == t
@@ -42,37 +41,41 @@ function validators.factory.type(t)
         end
     end
 end
-function validators.factory.min(min)
+local factory = {}
+function factory.type(t)
+    return istype(t)
+end
+function factory.min(min)
     return function(value)
         return value >= min
     end
 end
-function validators.factory.max(max)
+function factory.max(max)
     return function(value)
         return value <= max
     end
 end
-function validators.factory.between(min, max)
+function factory.between(min, max)
     if not max then max = min end
     if max < min then min, max = max, min end
     return function(value)
         return value >= min and value <= max
     end
 end
-function validators.factory.outside(min, max)
+function factory.outside(min, max)
     if not max then max = min end
     if max < min then min, max = max, min end
     return function(value)
         return value < min and value > max
     end
 end
-function validators.factory.len(min, max)
+function factory.len(min, max)
     return len(nil, min, max)
 end
-function validators.factory.utf8len(min, max)
+function factory.utf8len(min, max)
     return len(utf8.len, min, max)
 end
-function validators.factory.equal(values)
+function factory.equal(values)
     return function(value)
         if type(values) == "table" then
             for _,v in ipairs(values) do
@@ -82,7 +85,7 @@ function validators.factory.equal(values)
         return value == values
     end
 end
-function validators.factory.unequal(values)
+function factory.unequal(values)
     return function(value)
         if type(values) == "table" then
             for _,v in ipairs(values) do
@@ -92,28 +95,28 @@ function validators.factory.unequal(values)
         return value ~= values
     end
 end
-function validators.factory.match(pattern, init)
+function factory.match(pattern, init)
     return function(value)
         return match(value, pattern, init) ~= nil
     end
 end
-function validators.factory.unmatch(pattern, init)
+function factory.unmatch(pattern, init)
     return function(value)
         return match(value, pattern, init) == nil
     end
 end
-function validators.factory.tostring()
+function factory.tostring()
     return function(value)
         return true, tostring(value)
     end
 end
-function validators.factory.tonumber(base)
+function factory.tonumber(base)
     return function(value)
         local nbr = tonumber(value, base)
         return nbr ~= nil, nbr
     end
 end
-function validators.factory.lower()
+function factory.lower()
     return function(value)
         if type(value) == "string" or type(value) == "number" then
             return true, lower(value)
@@ -121,7 +124,7 @@ function validators.factory.lower()
         return false
     end
 end
-function validators.factory.upper()
+function factory.upper()
     return function(value)
         if type(value) == "string" or type(value) == "number" then
             return true, upper(value)
@@ -129,7 +132,7 @@ function validators.factory.upper()
         return false
     end
 end
-function validators.factory.trim(pattern)
+function factory.trim(pattern)
     pattern = pattern or "%s+"
     local l = "^" .. pattern
     local r = pattern .. "$"
@@ -140,7 +143,7 @@ function validators.factory.trim(pattern)
         return false
     end
 end
-function validators.factory.ltrim(pattern)
+function factory.ltrim(pattern)
     pattern = "^" .. (pattern or "%s+")
     return function(value)
         if type(value) == "string" or type(value) == "number" then
@@ -149,7 +152,7 @@ function validators.factory.ltrim(pattern)
         return false
     end
 end
-function validators.factory.rtrim(pattern)
+function factory.rtrim(pattern)
     pattern = (pattern or "%s+") .. "$"
     return function(value)
         if type(value) == "string" or type(value) == "number" then
@@ -158,18 +161,19 @@ function validators.factory.rtrim(pattern)
         return false
     end
 end
-validators["nil"]      = validators.factory.type("nil")
-validators["null"]     = validators.factory.type("nil")
-validators["boolean"]  = validators.factory.type("boolean")
-validators["number"]   = validators.factory.type("number")
-validators["string"]   = validators.factory.type("string")
-validators["userdata"] = validators.factory.type("userdata")
-validators["function"] = validators.factory.type("function")
-validators["func"]     = validators.factory.type("function")
-validators["thread"]   = validators.factory.type("thread")
-validators["integer"]  = validators.factory.type("integer")
-validators["float"]    = validators.factory.type("float")
-validators["file"]     = validators.factory.type("file")
+local validators = { factory = factory }
+validators["nil"]      = istype("nil")
+validators["null"]     = istype("nil")
+validators["boolean"]  = istype("boolean")
+validators["number"]   = istype("number")
+validators["string"]   = istype("string")
+validators["userdata"] = istype("userdata")
+validators["function"] = istype("function")
+validators["func"]     = istype("function")
+validators["thread"]   = istype("thread")
+validators["integer"]  = istype("integer")
+validators["float"]    = istype("float")
+validators["file"]     = istype("file")
 local mt = {}
 function mt.__index(t, k)
     if validators[k] then
