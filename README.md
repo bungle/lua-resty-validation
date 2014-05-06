@@ -61,7 +61,7 @@ Type validators can be used to validate the type of the validated value. These v
 * `number`
 * `string`
 * `userdata`
-* `function` or `func` (as the function is a reserver keyword in Lua)
+* `function` or `func` (as the function is a reserved keyword in Lua)
 * `thread`
 * `integer` (works only with Lua > 5.3, `math.type(nbr) == 'integer'`)
 * `float` (works only with Lua > 5.3,   `math.type(nbr) == 'float'`)
