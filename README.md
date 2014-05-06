@@ -48,7 +48,7 @@ else
 end
 ```
 
-## Built-in Validators
+## Built-in Validators and Filters
 
 `lua-resty-validation` comes with several built-in validators, and the project is open for contributions of more validators.
 
@@ -81,7 +81,7 @@ local f = assert(io.open('filename.txt', "r"))
 local ok, e = validation.file(f)
 ```
 
-### Validation Factory Validators
+### Validation Factory Validators and Filters
 
 Validation factory consist of different validators and filters used to validate or filter the validated value:
 
