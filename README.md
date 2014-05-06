@@ -47,3 +47,94 @@ else
         form.number.value, form.number.error, form.number.invalid)
 end
 ```
+
+## Built-in Validators
+
+`lua-resty-validation` comes with several built-in validators, and the project is open for contributions of more validators.
+
+### Type Validators
+
+Type validators can be used to validate the type of the validated value. These validators are parameter-less validators:
+
+* `nil` or `null` (as the nil is a reserved keyword in Lua)
+* `boolean`
+* `number`
+* `string`
+* `userdata`
+* `function` or `func` (as the function is a reserver keyword in Lua)
+* `thread`
+* `integer` (works only with Lua > 5.3, `math.type(nbr) == 'integer'`)
+* `float` (works only with Lua > 5.3,   `math.type(nbr) == 'float'`)
+* `file` (`io.type(value) == 'file'`)
+
+#### Example
+
+```lua
+local validation = require "resty.validation"
+local ok, e = validation.null(nil)
+local ok, e = validation.boolean(true)
+local ok, e = validation.number(5.2)
+local ok, e = validation.string('Hello, World!')
+local ok, e = validation.integer(10)
+local ok, e = validation.float(math.pi)
+local f = assert(io.open('filename.txt', "r"))
+local ok, e = validation.file(f)
+```
+
+### Validation Factory Validators
+
+Validation factory consist of different validators and filters used to validate or filter the validated value:
+
+* `type(t)`, validates that the value is of type `t` (see Type Validators)
+* `min(min)`, validates that the value is at least `min` (`>=`)
+* `max(max)`, validates that the value is at most `max` (`<=`)
+* `between(min[, max = min])`, validates that the value is between `min` and `max`
+* `outside(min[, max = min])`, validates that the value is not between `min` and `max`
+* `len(min[, max = min])`, validates that the length (`#`) of the value is exactly `min`, at least `min`, at most `max` or between `min` and `max`
+* `utf8len(min[, max = min])`, validates that the length (`utf8.len`) of the value is exactly `min`, at least `min`, at most `max` or between `min` and `max`
+* `equal(values)`, validates that the value is exactly something or one of the values
+* `unequal(values)`, validates that the value is not exactly something or one of the values.
+* `match(pattern[, init])`, validates that the value matches (`string.match`) the pattern
+* `unmatch(pattern[, init])`, validates that the value does not match (`string.match`) the pattern
+* `tostring()`, converts value to string
+* `tonumber([base])`, converts value to number
+* `lower()`, converts value to lower case
+* `upper()`, converts value to upper case
+* `trim()`, trims whitespace from left and right
+* `ltrim()`, trims whitespace from left
+* `rtrim()`, trims whitespace from right
+
+#### Examples
+
+```lua
+local validation = require "resty.validation"
+local ok, e = validation.string.trim().len(8)("my value")
+local ok, e = validation.string.trim().len{ max = 8 }("my value")
+local ok, e = validation.number.between(1, 100).outside(40, 50)(90)
+local ok, e = validation.equal(10)(10)
+local ok, e = validation.equal{ 10, 20, 30, 40, 50 }(30)
+```
+
+## License
+
+`lua-resty-validation` uses two clause BSD license.
+
+```
+Copyright (c) 2014, Aapo Talvensaari
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice, this
+  list of conditions and the following disclaimer in the documentation and/or
+  other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES`
