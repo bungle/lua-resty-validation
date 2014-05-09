@@ -91,8 +91,8 @@ Validation factory consist of different validators and filters used to validate 
 * `between(min[, max = min])`, validates that the value is between `min` and `max`
 * `outside(min[, max = min])`, validates that the value is not between `min` and `max`
 * `len(min[, max = min])`, validates that the length (`#` or `string.len` or `utf8.len` (if available)) of the value is exactly `min`, at least `min`, at most `max` or between `min` and `max`
-* `minlen(min)`, validates that the length is of the value is at least `min`
-* `maxlen(min)`, validates that the length is of the value is at most `max`
+* `minlen(min)`, validates that the length of the value is at least `min`
+* `maxlen(min)`, validates that the length of the value is at most `max`
  most `max` or between `min` and `max`
 * `equal(values)`, validates that the value is exactly something or one of the values
 * `unequal(values)`, validates that the value is not exactly something or one of the values.
