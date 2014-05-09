@@ -102,9 +102,9 @@ Validation factory consist of different validators and filters used to validate 
 * `tonumber([base])`, converts value to number
 * `lower()`, converts value to lower case
 * `upper()`, converts value to upper case
-* `trim()`, trims whitespace from left and right
-* `ltrim()`, trims whitespace from left
-* `rtrim()`, trims whitespace from right
+* `trim()`, trims whitespace from the left and the right
+* `ltrim()`, trims whitespace from the left
+* `rtrim()`, trims whitespace from the right
 
 #### Examples
 
