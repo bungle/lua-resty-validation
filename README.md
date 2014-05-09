@@ -48,7 +48,7 @@ else
 end
 ```
 
-## Built-in Validators
+## Built-in Validators and Filters
 
 `lua-resty-validation` comes with several built-in validators, and the project is open for contributions of more validators.
 
@@ -61,7 +61,7 @@ Type validators can be used to validate the type of the validated value. These v
 * `number`
 * `string`
 * `userdata`
-* `function` or `func` (as the function is a reserver keyword in Lua)
+* `function` or `func` (as the function is a reserved keyword in Lua)
 * `thread`
 * `integer` (works only with Lua > 5.3, `math.type(nbr) == 'integer'`)
 * `float` (works only with Lua > 5.3,   `math.type(nbr) == 'float'`)
@@ -81,7 +81,7 @@ local f = assert(io.open('filename.txt', "r"))
 local ok, e = validation.file(f)
 ```
 
-### Validation Factory Validators
+### Validation Factory Validators and Filters
 
 Validation factory consist of different validators and filters used to validate or filter the validated value:
 
