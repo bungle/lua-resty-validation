@@ -9,22 +9,9 @@ local upper = string.upper
 local pairs = pairs
 local gsub = string.gsub
 local type = type
-local function len(func, min, max)
-    local mn, mx
-    if type(min) == "table" then
-        if min.min then mn = min.min end
-        if min.max then mx = min.max end
-    else
-        mn, mx = min, max
-    end
-    return function(value)
-        local l
-        if func then l = func(value) else l = #value end
-        if type(l) ~= "number" then return false end
-        if mn and l < mn       then return false end
-        if mx and l > mx       then return false end
-        return true
-    end
+local len = string.len
+if utf8 and utf8.len then
+    len = utf8.len
 end
 local function istype(t)
     if t == "integer" or t == "float" then
@@ -70,10 +57,27 @@ function factory.outside(min, max)
     end
 end
 function factory.len(min, max)
-    return len(nil, min, max)
+    local mn, mx
+    if type(min) == "table" then
+        if min.min then mn = min.min end
+        if min.max then mx = min.max end
+    else
+        mn, mx = min, max
+    end
+    return function(value)
+        local l
+        if type(value) == "string" then l = len(value) else l = #value end
+        if type(l)     ~= "number" then return false end
+        if mn and l < mn           then return false end
+        if mx and l > mx           then return false end
+        return true
+    end
 end
-function factory.utf8len(min, max)
-    return len(utf8.len, min, max)
+function factory.minlen(min)
+    return factory.len(min)
+end
+function factory.maxlen(max)
+    return factory.len(nil, min)
 end
 function factory.equal(values)
     return function(value)
