@@ -56,6 +56,26 @@ function factory.outside(min, max)
         return value < min and value > max
     end
 end
+function factory.divisible(number)
+    assert(type(number) == "number")
+    return function(value)
+        if type(value) == "number" then
+            return value % number == 0
+        else
+            return false
+        end
+    end
+end
+function factory.indivisible(number)
+    assert(type(number) == "number")
+    return function(value)
+        if type(value) == "number" then
+            return value % number ~= 0
+        else
+            return false
+        end
+    end
+end
 function factory.len(min, max)
     local mn, mx
     if type(min) == "table" then
