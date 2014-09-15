@@ -1,0 +1,4 @@
+
+Changes with lua-resty-validation 1.0                            28 Aug 2014
+
+    *) Feature: LuaRocks Support via MoonRocks.
