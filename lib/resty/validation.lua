@@ -9,6 +9,9 @@ local upper = string.upper
 local pairs = pairs
 local gsub = string.gsub
 local type = type
+local iotype = io.type
+local mathtype = math.type
+local tointeger = math.tointeger
 local len = string.len
 if utf8 and utf8.len then
     len = utf8.len
@@ -16,11 +19,11 @@ end
 local function istype(t)
     if t == "integer" or t == "float" then
         return function(value)
-            return math.type(value) == t
+            return mathtype(value) == t
         end
     elseif t == "file" then
         return function(value)
-            return io.type(value) == t
+            return iotype(value) == t
         end
     else
         return function(value)
@@ -137,6 +140,12 @@ end
 function factory.tonumber(base)
     return function(value)
         local nbr = tonumber(value, base)
+        return nbr ~= nil, nbr
+    end
+end
+function factory.tointeger()
+    return function(value)
+        local nbr = tointeger(value)
         return nbr ~= nil, nbr
     end
 end
