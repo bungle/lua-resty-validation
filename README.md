@@ -105,9 +105,9 @@ Validation factory consist of different validators and filters used to validate 
 * `tointeger()`, converts value to integer (works only with Lua >= 5.3, `math.tointeger`)
 * `lower()`, converts value to lower case
 * `upper()`, converts value to upper case
-* `trim([pattern])`, trims whitespace from the left and the right
-* `ltrim([pattern])`, trims whitespace from the left
-* `rtrim([pattern])`, trims whitespace from the right
+* `trim([pattern])`, trims whitespace (you may use pattern as well) from the left and the right
+* `ltrim([pattern])`, trims whitespace (you may use pattern as well) from the left
+* `rtrim([pattern])`, trims whitespace (you may use pattern as well) from the right
 
 #### Examples
 
