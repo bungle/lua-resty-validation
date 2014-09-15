@@ -102,7 +102,7 @@ Validation factory consist of different validators and filters used to validate 
 * `unmatch(pattern[, init])`, validates that the value does not match (`string.match`) the pattern
 * `tostring()`, converts value to string
 * `tonumber([base])`, converts value to number
-* `tointeger()`, converts value to integer (works only with Lua >= 5.3, `math.tointeger'`)
+* `tointeger()`, converts value to integer (works only with Lua >= 5.3, `math.tointeger`)
 * `lower()`, converts value to lower case
 * `upper()`, converts value to upper case
 * `trim()`, trims whitespace from the left and the right
