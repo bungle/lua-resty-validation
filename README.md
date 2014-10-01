@@ -48,6 +48,27 @@ else
 end
 ```
 
+## Installation
+
+Just place [`validation.lua`](https://github.com/bungle/lua-resty-validation/blob/master/lib/resty/validation.lua) somewhere in your `package.path`, preferably under `resty` directory. If you are using OpenResty, the default location would be `/usr/local/openresty/lualib/resty`.
+
+### Using LuaRocks or MoonRocks
+
+If you are using LuaRocks >= 2.2:
+
+```Shell
+$ luarocks install lua-resty-validation
+```
+
+If you are using LuaRocks < 2.2:
+
+```Shell
+$ luarocks install --server=http://rocks.moonscript.org moonrocks
+$ moonrocks install lua-resty-validation
+```
+
+MoonRocks repository for `lua-resty-validation`  is located here: https://rocks.moonscript.org/modules/bungle/lua-resty-validation.
+
 ## Built-in Validators and Filters
 
 `lua-resty-validation` comes with several built-in validators, and the project is open for contributions of more validators.
