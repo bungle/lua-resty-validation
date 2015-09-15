@@ -6,7 +6,7 @@ local base64dec    = ngx.decode_base64
 local crc32short   = ngx.crc32_short
 local crc32long    = ngx.crc32_long
 local validators   = validation.validators
-local factory      = validators.factory
+local factory      = getmetatable(validators)
 function factory.escape_uri()
     return function(value)
         return true, escape_uri(value)
@@ -49,6 +49,13 @@ function factory.crc32()
         return true, crc32long(value)
     end
 end
+validators.escape_uri = factory.escape_uri()
+validators.unescape_uri = factory.unescape_uri()
+validators.base64enc = factory.base64enc()
+validators.base64dec = factory.base64dec()
+validators.crc32short = factory.crc32short()
+validators.crc32long = factory.crc32long()
+validators.crc32 = factory.crc32()
 return {
     escape_uri   = factory.escape_uri,
     unescape_uri = factory.unescape_uri,
