@@ -157,6 +157,11 @@ function factory.tointeger()
         return nbr ~= nil, nbr
     end
 end
+function factory.toboolean()
+    return function(value)
+        return true, not not value
+    end
+end
 function factory.lower()
     return function(value)
         local t = type(value)
@@ -235,6 +240,7 @@ local validators = setmetatable({
     tostring     = factory.tostring(),
     tonumber     = factory.tonumber(),
     tointeger    = factory.tointeger(),
+    toboolean    = factory.toboolean(),
     lower        = factory.lower(),
     upper        = factory.upper(),
     trim         = factory.trim(),

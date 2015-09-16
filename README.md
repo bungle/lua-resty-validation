@@ -7,8 +7,8 @@
 ```lua
 local validation = require "resty.validation"
 
-local valid, e = validation.number.between(0, 9)(5)  -- valid = true,  e = 5
-local valid, e = validation.number.between(0, 9)(50) -- valid = false, e = "between"
+local valid, e = validation.number:between(0, 9)(5)  -- valid = true,  e = 5
+local valid, e = validation.number:between(0, 9)(50) -- valid = false, e = "between"
 
 -- Validators can be reused
 local smallnumber = validation.number.between(0, 9)
@@ -17,40 +17,38 @@ local valid, e = smallnumber(50) -- valid = false, e = "between"
 
 -- Validators can do filtering (i.e. modify the value being validated)
 -- valid = true, s = "HELLO WORLD!"
-local valid, s = validation.string.upper()("hello world!")
+local valid, s = validation.string.upper("hello world!")
 
 -- You may extend the validation library with your own validators and filters...
-validation.validators.factory.reverse = function() 
-  return function(value)
-    if type(value) == "string" then
-      return true, string.reverse(value)
-    end
-    return false
-  end
+validation.validators.capitalize = function(value) 
+    return true, value:gsub("^%l", string.upper)
 end
 
 -- ... and then use it
-local valid, e = validation.reverse()("ABC") -- valid = true,  e = "CBA"
-local valid, e = validation.reverse()(5)     -- valid = false, e = "reverse"
+local valid, e = validation.capitalize("abc") -- valid = true,  e = "Abc"
 
 -- You can also group validate many values
-local form = validation.new{ artist = "Eddie Vedder", number = 10 }
-form.artist:validate(validation.string.len{ min = 5 })
-form.number:validate(validation.equal(10))
+local form = validation.new()
+form.artist = validation.string.minlen(5)
+form.number = validation.equal(10)
 
-if form.valid then
+local valid, fields, errors = form{ artist = "Eddie Vedder", number = 10 }
+
+if valid then
   print("all the form fields are valid")
 else
-  print(form.artist.name,  form.artist.valid, form.artist.input,
-        form.artist.value, form.artist.error, form.artist.invalid)
-  print(form.number.name,  form.number.valid, form.number.input,
-        form.number.value, form.number.error, form.number.invalid)
+  print(fields.artist.name,  fields.artist.valid, fields.artist.input,
+        fields.artist.value, fields.artist.error, fields.artist.invalid)
+  print(fields.number.name,  fields.number.valid, fields.number.input,
+        fields.number.value, fields.number.error, fields.number.invalid)
 end
 ```
 
 ## Installation
 
-Just place [`validation.lua`](https://github.com/bungle/lua-resty-validation/blob/master/lib/resty/validation.lua) somewhere in your `package.path`, preferably under `resty` directory. If you are using OpenResty, the default location would be `/usr/local/openresty/lualib/resty`.
+Just place [`validation.lua`](https://github.com/bungle/lua-resty-validation/blob/master/lib/resty/validation.lua)
+somewhere in your `package.path`, preferably under `resty` directory. If you are using OpenResty, the default
+location would be `/usr/local/openresty/lualib/resty`.
 
 ### Using LuaRocks or MoonRocks
 
@@ -73,9 +71,10 @@ MoonRocks repository for `lua-resty-validation`  is located here: https://rocks.
 
 `lua-resty-validation` comes with several built-in validators, and the project is open for contributions of more validators.
 
-### Type Validators
+### Validators and Filters without Arguments
 
-Type validators can be used to validate the type of the validated value. These validators are parameter-less validators:
+Type validators can be used to validate the type of the validated value. These validators are argument-less
+validators (call them with dot `.`):
 
 * `nil` or `null` (as the nil is a reserved keyword in Lua)
 * `boolean`
@@ -87,6 +86,22 @@ Type validators can be used to validate the type of the validated value. These v
 * `integer` (works only with Lua >= 5.3, `math.type(nbr) == 'integer'`)
 * `float` (works only with Lua >= 5.3,   `math.type(nbr) == 'float'`)
 * `file` (`io.type(value) == 'file'`)
+
+Type conversion filters:
+
+* `tostring`
+* `tonumber`
+* `tointeger`
+* `toboolean`
+
+Other filters:
+
+* `lower`
+* `upper`
+* `trim`
+* `ltrim`
+* `rtrim`
+* `reverse`
 
 #### Example
 
@@ -134,11 +149,11 @@ Validation factory consist of different validators and filters used to validate 
 
 ```lua
 local validation = require "resty.validation"
-local ok, e = validation.string.trim().len(8)("my value")
-local ok, e = validation.string.trim().len{ max = 8 }("my value")
-local ok, e = validation.number.between(1, 100).outside(40, 50)(90)
-local ok, e = validation.equal(10)(10)
-local ok, e = validation.equal{ 10, 20, 30, 40, 50 }(30)
+local ok, e = validation.string.trim:len(8)("my value")
+local ok, e = validation.string.trim:len{ max = 8 }("my value")
+local ok, e = validation.number:between(1, 100):outside(40, 50)(90)
+local ok, e = validation:equal(10)(10)
+local ok, e = validation:equal{ 10, 20, 30, 40, 50 }(30)
 ```
 
 ## License
@@ -146,7 +161,7 @@ local ok, e = validation.equal{ 10, 20, 30, 40, 50 }(30)
 `lua-resty-validation` uses two clause BSD license.
 
 ```
-Copyright (c) 2014, Aapo Talvensaari
+Copyright (c) 2015, Aapo Talvensaari
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
