@@ -289,14 +289,12 @@ function mt:__call(t)
     return #errors == 0, results, errors
 end
 
-local group = {}
-
-function group.new()
+function group()
     return setmetatable({}, mt)
 end
 
 local function validation(func, parent_f, parent, method)
-    return setmetatable({ new = group.new, validators = validators }, {
+    return setmetatable({ new = group, validators = validators }, {
         __index = function(self, index)
             return validation(function(...)
                 local valid, value = func(...)
