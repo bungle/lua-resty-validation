@@ -1,6 +1,7 @@
 local setmetatable = setmetatable
 local getmetatable = getmetatable
 local rawget = rawget
+local select = select
 local tostring = tostring
 local tonumber = tonumber
 local type = type
@@ -224,6 +225,16 @@ function factory.reverse()
         return false
     end
 end
+function factory.coalesce(...)
+    local args = { ... }
+    return function(value)
+        if value ~= nil then return true, value end
+        for _, v in ipairs(args) do
+            if v ~= nil then return true, v end
+        end
+        return true, nil
+    end
+end
 
 factory.__index = factory
 
@@ -307,12 +318,13 @@ local function validation(func, parent_f, parent, method)
                     error(index, 0)
                 end
                 local valid, v = validator(value)
-                if not valid then error(index, 0) end
+                if not valid then error(index, 0)  end
                 return valid, v or value
             end, func, self, index)
         end,
         __call = function(_, self, ...)
-            if self == parent then
+            if parent ~= nil and self == parent then
+                local n = select("#", ...)
                 local args = { ... }
                 return validation(function(...)
                     local valid, value = parent_f(...)
@@ -321,7 +333,7 @@ local function validation(func, parent_f, parent, method)
                     if not validator then
                         error(method, 0)
                     end
-                    local valid, v = validator(unpack(args))(value)
+                    local valid, v = validator(unpack(args, 1, n))(value)
                     if not valid then error(method, 0) end
                     return valid, v or value
                 end)

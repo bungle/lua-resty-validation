@@ -147,6 +147,7 @@ Validation factory consist of different validators and filters used to validate 
 * `ltrim([pattern])`, trims whitespace (you may use pattern as well) from the left
 * `rtrim([pattern])`, trims whitespace (you may use pattern as well) from the right
 * `reverse`, reverses the value (string or number)
+* `coalesce(...)`, if the value is nil, returns first non-nil value passed as arguments
 
 #### Examples
 
