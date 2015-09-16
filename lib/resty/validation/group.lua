@@ -37,7 +37,7 @@ function mt:__call(t)
             }, rmt)
         end
     end
-    return false, results, errors
+    return #errors == 0, results, errors
 end
 
 local group = {}
