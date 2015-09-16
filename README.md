@@ -29,8 +29,8 @@ local valid, e = validation.capitalize("abc") -- valid = true,  e = "Abc"
 
 -- You can also group validate many values
 local form = validation.new()
-form.artist = validation.string.minlen(5)
-form.number = validation.equal(10)
+form.artist = validation.string:minlen(5)
+form.number = validation:equal(10)
 
 local valid, fields, errors = form{ artist = "Eddie Vedder", number = 10 }
 
