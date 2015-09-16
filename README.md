@@ -119,7 +119,8 @@ local ok, e = validation.file(f)
 
 ### Validation Factory Validators and Filters
 
-Validation factory consist of different validators and filters used to validate or filter the validated value:
+Validation factory consist of different validators and filters used to validate or filter the value
+(call them with colon `:`):
 
 * `type(t)`, validates that the value is of type `t` (see Type Validators)
 * `min(min)`, validates that the value is at least `min` (`>=`)
