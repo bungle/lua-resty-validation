@@ -3,18 +3,21 @@ local getmetatable = getmetatable
 local rawget = rawget
 local tostring = tostring
 local tonumber = tonumber
+local type = type
 local ipairs = ipairs
 local error = error
 local match = string.match
 local lower = string.lower
 local upper = string.upper
 local gsub = string.gsub
-local type = type
+local len = string.len
+local reverse = string.reverse
 local iotype = io.type
 local mathtype = math.type
 local tointeger = math.tointeger
-local len = string.len
+local abs = math.abs
 local unpack = unpack or table.unpack
+
 if utf8 and utf8.len then
     len = utf8.len
 end
@@ -105,6 +108,8 @@ end
 function factory.maxlen(max)
     return factory.len(nil, max)
 end
+function factory.nulif()
+end
 function factory.equal(values)
     return function(value)
         if type(values) == "table" then
@@ -154,7 +159,8 @@ function factory.tointeger()
 end
 function factory.lower()
     return function(value)
-        if type(value) == "string" or type(value) == "number" then
+        local t = type(value)
+        if t == "string" or t == "number" then
             return true, lower(value)
         end
         return false
@@ -162,7 +168,8 @@ function factory.lower()
 end
 function factory.upper()
     return function(value)
-        if type(value) == "string" or type(value) == "number" then
+        local t = type(value)
+        if t == "string" or t == "number" then
             return true, upper(value)
         end
         return false
@@ -173,7 +180,8 @@ function factory.trim(pattern)
     local l = "^" .. pattern
     local r = pattern .. "$"
     return function(value)
-        if type(value) == "string" or type(value) == "number" then
+        local t = type(value)
+        if t == "string" or t == "number" then
             return true, (gsub(value, r, ""):gsub(l, ""))
         end
         return false
@@ -182,7 +190,8 @@ end
 function factory.ltrim(pattern)
     pattern = "^" .. (pattern or "%s+")
     return function(value)
-        if type(value) == "string" or type(value) == "number" then
+        local t = type(value)
+        if t == "string" or t == "number" then
             return true, (gsub(value, pattern, ""))
         end
         return false
@@ -191,8 +200,18 @@ end
 function factory.rtrim(pattern)
     pattern = (pattern or "%s+") .. "$"
     return function(value)
-        if type(value) == "string" or type(value) == "number" then
+        local t = type(value)
+        if t == "string" or t == "number" then
             return true, (gsub(value, pattern, ""))
+        end
+        return false
+    end
+end
+function factory.reverse()
+    return function(value)
+        local t = type(value)
+        if t == "string" or t == "number" then
+            return true, reverse(value)
         end
         return false
     end
@@ -220,8 +239,11 @@ local validators = setmetatable({
     upper        = factory.upper(),
     trim         = factory.trim(),
     ltrim        = factory.ltrim(),
-    rtrim        = factory.rtrim()
+    rtrim        = factory.rtrim(),
+    reverse      = factory.reverse()
 }, factory)
+
+
 
 local function validation(func, parent_f, parent, method)
     return setmetatable({ validators = validators }, {
