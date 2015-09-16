@@ -243,8 +243,6 @@ local validators = setmetatable({
     reverse      = factory.reverse()
 }, factory)
 
-
-
 local function validation(func, parent_f, parent, method)
     return setmetatable({ validators = validators }, {
         __index = function(self, index)
