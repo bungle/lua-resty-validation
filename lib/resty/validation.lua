@@ -110,7 +110,8 @@ function factory.maxlen(max)
 end
 function factory.nulif()
 end
-function factory.equal(values)
+
+function factory.equals(values)
     return function(value)
         if type(values) == "table" then
             for _,v in ipairs(values) do
@@ -120,7 +121,8 @@ function factory.equal(values)
         return value == values
     end
 end
-function factory.unequal(values)
+factory.equal = factory.equals
+function factory.unequals(values)
     return function(value)
         if type(values) == "table" then
             for _,v in ipairs(values) do
@@ -130,6 +132,7 @@ function factory.unequal(values)
         return value ~= values
     end
 end
+factory.unequal = factory.unequals
 function factory.match(pattern, init)
     return function(value)
         return match(value, pattern, init) ~= nil
