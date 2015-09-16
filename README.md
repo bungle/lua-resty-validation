@@ -11,7 +11,7 @@ local valid, e = validation.number:between(0, 9)(5)  -- valid = true,  e = 5
 local valid, e = validation.number:between(0, 9)(50) -- valid = false, e = "between"
 
 -- Validators can be reused
-local smallnumber = validation.number.between(0, 9)
+local smallnumber = validation.number:between(0, 9)
 local valid, e = smallnumber(5)  -- valid = true,  e = 5
 local valid, e = smallnumber(50) -- valid = false, e = "between"
 
