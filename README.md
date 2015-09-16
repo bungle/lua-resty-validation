@@ -140,11 +140,13 @@ Validation factory consist of different validators and filters used to validate 
 * `tostring()`, converts value to string
 * `tonumber([base])`, converts value to number
 * `tointeger()`, converts value to integer (works only with Lua >= 5.3, `math.tointeger`)
+* `toboolean()`, converts value to boolean (using `not not value`)
 * `lower()`, converts value to lower case
 * `upper()`, converts value to upper case
 * `trim([pattern])`, trims whitespace (you may use pattern as well) from the left and the right
 * `ltrim([pattern])`, trims whitespace (you may use pattern as well) from the left
 * `rtrim([pattern])`, trims whitespace (you may use pattern as well) from the right
+* `reverse`, reverses the value (string or number)
 
 #### Examples
 
