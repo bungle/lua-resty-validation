@@ -114,9 +114,6 @@ end
 function factory.maxlen(max)
     return factory.len(nil, max)
 end
-function factory.nulif()
-end
-
 function factory.equals(values)
     return function(value)
         if type(values) == "table" then
