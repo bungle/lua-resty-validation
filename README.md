@@ -96,6 +96,7 @@ Type conversion filters:
 
 Other filters:
 
+* `abs`
 * `lower`
 * `upper`
 * `trim`
@@ -123,6 +124,17 @@ Validation factory consist of different validators and filters used to validate 
 (call them with colon `:`):
 
 * `type(t)`, validates that the value is of type `t` (see Type Validators)
+* `iftype(t, truthy, falsy)`, checks that value type `t` and if matches, returns `truthy`, otherwise returns `falsy`
+* `ifnil(truthy, falsy)` or `ifnull(truthy, falsy)`, checks that value type is `nil` and if matches, returns `truthy`, otherwise returns `falsy`
+* `ifboolean(truthy, falsy)`, checks that value type is `boolean` and if matches, returns `truthy`, otherwise returns `falsy`
+* `ifnumber(truthy, falsy)`, checks that value type is `number` and if matches, returns `truthy`, otherwise returns `falsy`
+* `ifstring(truthy, falsy)`, checks that value type is `string` and if matches, returns `truthy`, otherwise returns `falsy`
+* `ifuserdata(truthy, falsy)`, checks that value type is `userdata` and if matches, returns `truthy`, otherwise returns `falsy`
+* `iffunction(truthy, falsy)` or `iffunc(truthy, falsy)`, checks that value type is `funtion` and if matches, returns `truthy`, otherwise returns `falsy`
+* `ifthread(truthy, falsy)`, checks that value type is `thread` and if matches, returns `truthy`, otherwise returns `falsy`
+* `ifinteger(truthy, falsy)`, checks that value type is `integer` and if matches, returns `truthy`, otherwise returns `falsy` (works only with Lua >= 5.3)
+* `iffloat(truthy, falsy)`, checks that value type is `float` and if matches, returns `truthy`, otherwise returns `falsy` (works only with Lua >= 5.3)
+* `iffile(truthy, falsy)`, checks that value type is `file` and if matches, returns `truthy`, otherwise returns `falsy`
 * `min(min)`, validates that the value is at least `min` (`>=`)
 * `max(max)`, validates that the value is at most `max` (`<=`)
 * `between(min[, max = min])`, validates that the value is between `min` and `max`
