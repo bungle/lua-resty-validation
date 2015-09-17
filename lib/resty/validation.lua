@@ -263,16 +263,27 @@ local validators = setmetatable({
     reverse      = factory.reverse()
 }, factory)
 
-local rmt = {
-    __tostring = function(self)
-        return self.value
+local field = {}
+
+function field:__tostring()
+    return self.value
+end
+
+local fields = {}
+
+function fields:__call()
+    local data = {}
+    for index, field in pairs(self) do
+        data[index] = field.value
     end
-}
+    return data
+end
+
 local mt = {}
 
 function mt:__call(t)
     local errors  = {}
-    local results = {}
+    local results = setmetatable({}, fields)
     for index, value in pairs(t) do
         local ok, err = true, value
         if self[index] then
@@ -286,7 +297,7 @@ function mt:__call(t)
                 valid = true,
                 invalid = false,
                 error = nil
-            }, rmt)
+            }, field)
         else
             errors[#errors + 1] = index
             errors[index] = err
@@ -297,7 +308,7 @@ function mt:__call(t)
                 valid = false,
                 invalid = true,
                 error = err
-            }, rmt)
+            }, field)
         end
     end
     return #errors == 0, results, errors
