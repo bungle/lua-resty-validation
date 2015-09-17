@@ -90,6 +90,16 @@ function factory.abs()
         return true, abs(value)
     end
 end
+function factory.positive()
+    return function(value)
+        return value > 0
+    end
+end
+function factory.negative()
+    return function(value)
+        return value < 0
+    end
+end
 function factory.min(min)
     return function(value)
         return value >= min
@@ -299,6 +309,8 @@ local validators = setmetatable({
     tointeger    = factory.tointeger(),
     toboolean    = factory.toboolean(),
     abs          = factory.abs(),
+    postive      = factory.positive(),
+    negative     = factoru.negative(),
     lower        = factory.lower(),
     upper        = factory.upper(),
     trim         = factory.trim(),
