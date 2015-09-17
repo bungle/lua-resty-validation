@@ -266,7 +266,8 @@ local validators = setmetatable({
 local field = {}
 
 function field:__tostring()
-    return self.value
+    if type(self.value == "string") then return self.value end
+    return tostring(self.value)
 end
 
 local fields = {}
@@ -284,30 +285,40 @@ local mt = {}
 function mt:__call(t)
     local errors  = {}
     local results = setmetatable({}, fields)
-    for index, value in pairs(t) do
-        local ok, err = true, value
-        if self[index] then
-            ok, err = self[index](value)
-        end
+    for index, func in pairs(self) do
+        local input = t[index]
+        local ok, value = func(input)
         if ok then
             results[index] = setmetatable({
-                name = name,
-                input = value,
-                value = err,
+                name = index,
+                input = input,
+                value = value,
                 valid = true,
                 invalid = false,
                 error = nil
             }, field)
         else
             errors[#errors + 1] = index
-            errors[index] = err
+            errors[index] = value
             results[index] = setmetatable({
-                name = name,
-                input = value,
-                value = value,
+                name = index,
+                input = input,
+                value = input,
                 valid = false,
                 invalid = true,
                 error = err
+            }, field)
+        end
+    end
+    for index, input in pairs(t) do
+        if not results[index] then
+            results[index] = setmetatable({
+                name = index,
+                input = input,
+                value = input,
+                valid = true,
+                invalid = false,
+                error = nil
             }, field)
         end
     end
