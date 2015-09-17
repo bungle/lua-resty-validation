@@ -44,6 +44,47 @@ local factory = {}
 function factory.type(t)
     return istype(t)
 end
+function factory.iftype(t, truthy, falsy)
+    local check = istype(t)
+    return function(value)
+        if check(value) then
+            return true, truthy
+        end
+        return true, falsy
+    end
+end
+function factory.ifnil(truthy, falsy)
+    return factory.iftype("nil", truthy, falsy)
+end
+factory.ifnull = factory.ifnil
+function factory.ifboolean(truthy, falsy)
+    return factory.iftype("boolean", truthy, falsy)
+end
+function factory.ifnumber(truthy, falsy)
+    return factory.iftype("number", truthy, falsy)
+end
+function factory.ifstring(truthy, falsy)
+    return factory.iftype("string", truthy, falsy)
+end
+function factory.ifuserdata(truthy, falsy)
+    return factory.iftype("userdata", truthy, falsy)
+end
+function factory.iffunction(truthy, falsy)
+    return factory.iftype("function", truthy, falsy)
+end
+factory.iffunc = factory.iffunction
+function factory.ifthread(truthy, falsy)
+    return factory.iftype("thread", truthy, falsy)
+end
+function factory.ifinteger(truthy, falsy)
+    return factory.iftype("integer", truthy, falsy)
+end
+function factory.iffloat(truthy, falsy)
+    return factory.iftype("float", truthy, falsy)
+end
+function factory.iffile(truthy, falsy)
+    return factory.iftype("file", truthy, falsy)
+end
 function factory.abs()
     return function(value)
         return true, abs(value)
