@@ -44,6 +44,11 @@ local factory = {}
 function factory.type(t)
     return istype(t)
 end
+function factory.abs()
+    return function(value)
+        return true, abs(value)
+    end
+end
 function factory.min(min)
     return function(value)
         return value >= min
@@ -255,6 +260,7 @@ local validators = setmetatable({
     tonumber     = factory.tonumber(),
     tointeger    = factory.tointeger(),
     toboolean    = factory.toboolean(),
+    abs          = factory.abs(),
     lower        = factory.lower(),
     upper        = factory.upper(),
     trim         = factory.trim(),
