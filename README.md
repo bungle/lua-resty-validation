@@ -97,6 +97,8 @@ Type conversion filters:
 Other filters:
 
 * `abs`
+* `positive`
+* `negative`
 * `lower`
 * `upper`
 * `trim`
@@ -135,6 +137,8 @@ Validation factory consist of different validators and filters used to validate 
 * `ifinteger(truthy, falsy)`, checks that value type is `integer` and if matches, returns `truthy`, otherwise returns `falsy` (works only with Lua >= 5.3)
 * `iffloat(truthy, falsy)`, checks that value type is `float` and if matches, returns `truthy`, otherwise returns `falsy` (works only with Lua >= 5.3)
 * `iffile(truthy, falsy)`, checks that value type is `file` and if matches, returns `truthy`, otherwise returns `falsy`
+* `iftrue(truthy, falsy)`, checks that value (or expression) evaluates to `true` and if yes, returns `truthy`, otherwise returns `falsy`
+* `iffalse(truthy, falsy)`, checks that value (or expression) evaluates to `false` and if yes, returns `truthy`, otherwise returns `falsy`
 * `abs()`, filters value and returns absolute value (`math.abs`)
 * `positive()`, validates that the value is positive (`> 0`)
 * `negative()`, validates that the value is negative (`< 0`)

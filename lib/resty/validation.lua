@@ -85,6 +85,22 @@ end
 function factory.iffile(truthy, falsy)
     return factory.iftype("file", truthy, falsy)
 end
+function factory.iftrue(truthy, falsy)
+    return function(value)
+        if value then
+            return true, truthy
+        end
+        return true, falsy
+    end
+end
+function factory.iffalse(truthy, falsy)
+    return function(value)
+        if not value then
+            return true, truthy
+        end
+        return true, falsy
+    end
+end
 function factory.abs()
     return function(value)
         return true, abs(value)
@@ -143,20 +159,13 @@ function factory.indivisible(number)
     end
 end
 function factory.len(min, max)
-    local mn, mx
-    if type(min) == "table" then
-        if min.min then mn = min.min end
-        if min.max then mx = min.max end
-    else
-        mn, mx = min, max
-    end
+    if not max then max = min end
+    if max < min then min, max = max, min end
     return function(value)
         local l
         if type(value) == "string" then l = len(value) else l = #value end
         if type(l)     ~= "number" then return false end
-        if mn and l < mn           then return false end
-        if mx and l > mx           then return false end
-        return true
+        return l >= min and l <= max
     end
 end
 function factory.minlen(min)
@@ -165,25 +174,15 @@ end
 function factory.maxlen(max)
     return factory.len(nil, max)
 end
-function factory.equals(values)
+function factory.equals(equal)
     return function(value)
-        if type(values) == "table" then
-            for _,v in ipairs(values) do
-                if v == value then return true end
-            end
-        end
-        return value == values
+        return value == equal
     end
 end
 factory.equal = factory.equals
-function factory.unequals(values)
+function factory.unequals(unequal)
     return function(value)
-        if type(values) == "table" then
-            for _,v in ipairs(values) do
-                if v == value then return false end
-            end
-        end
-        return value ~= values
+        return value ~= unequal
     end
 end
 factory.unequal = factory.unequals
@@ -310,7 +309,7 @@ local validators = setmetatable({
     toboolean    = factory.toboolean(),
     abs          = factory.abs(),
     postive      = factory.positive(),
-    negative     = factoru.negative(),
+    negative     = factory.negative(),
     lower        = factory.lower(),
     upper        = factory.upper(),
     trim         = factory.trim(),
