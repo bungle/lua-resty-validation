@@ -365,6 +365,9 @@ function fields:__call(...)
             valids = true
         elseif argv == "invalid" then
             invalids = true
+        elseif argv == "all" then
+            valids = true
+            invalids = true
         elseif argv then
             valids = true
         end

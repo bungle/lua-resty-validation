@@ -42,6 +42,25 @@ else
   print(fields.number.name,  fields.number.valid, fields.number.input,
         fields.number.value, fields.number.error, fields.number.invalid)
 end
+
+-- You can even call fields to get simple name => value table
+
+-- By default this returns only valid fields
+local data = fields()
+local data = fields(true)
+local data = fields("valid")
+
+-- To get only invalid fields call
+local data = fields("invalid")
+local data = fields(false, true)
+
+-- To get both use
+local data = fields("all")
+local data = fields("valid", "invalid")
+local data = fields(true, true)
+
+-- This doesn't stop here. You may also want to get only some fields, and you can do that by
+local data = data{ "artist" }
 ```
 
 ## Installation
@@ -96,6 +115,7 @@ Type conversion filters:
 
 Other filters:
 
+* `tonil` or `tonull`
 * `abs`
 * `positive`
 * `negative`
@@ -160,6 +180,7 @@ Validation factory consist of different validators and filters used to validate 
 * `tonumber([base])`, converts value to number
 * `tointeger()`, converts value to integer (works only with Lua >= 5.3, `math.tointeger`)
 * `toboolean()`, converts value to boolean (using `not not value`)
+* `tonil()` or `tonull()`, converts value to nil
 * `lower()`, converts value to lower case
 * `upper()`, converts value to upper case
 * `trim([pattern])`, trims whitespace (you may use pattern as well) from the left and the right
