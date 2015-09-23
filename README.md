@@ -59,7 +59,8 @@ local data = fields("all")
 local data = fields("valid", "invalid")
 local data = fields(true, true)
 
--- This doesn't stop here. You may also want to get only some fields, and you can do that by
+-- This doesn't stop here. You may also want to get only some fields.
+-- You can do that by calling
 local data = data{ "artist" }
 ```
 
