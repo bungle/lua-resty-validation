@@ -218,6 +218,12 @@ function factory.toboolean()
         return true, not not value
     end
 end
+function factory.tonil()
+    return function()
+        return true, nil
+    end
+end
+factory.tonull = factory.tonil
 function factory.lower()
     return function(value)
         local t = type(value)
@@ -307,6 +313,8 @@ local validators = setmetatable({
     tonumber     = factory.tonumber(),
     tointeger    = factory.tointeger(),
     toboolean    = factory.toboolean(),
+    tonil        = factory.tonil(),
+    tonull       = factory.tonull(),
     abs          = factory.abs(),
     positive     = factory.positive(),
     negative     = factory.negative(),
@@ -325,12 +333,59 @@ function field:__tostring()
     return tostring(self.value)
 end
 
+local dmt = {}
+
+function dmt:__call(...)
+    local argc = select("#", ...)
+    local data = {}
+    if argc == 0 then
+        for index, value in pairs(self) do
+            data[index] = value
+        end
+    else
+        for _, index in ipairs{ ... } do
+            if self[index] then
+                data[index] = self[index]
+            end
+        end
+    end
+    return data
+end
+
 local fields = {}
 
-function fields:__call()
-    local data = {}
+function fields:__call(...)
+    local valids, invalids
+    local argc = select("#", ...)
+    if argc == 0 then
+        valids = true
+    else
+        local argv = select(1, ...)
+        if argv == "valid" then
+            valids = true
+        elseif argv == "invalid" then
+            invalids = true
+        elseif argv then
+            valids = true
+        end
+        if argc > 1 then
+            argv = select(2, ...)
+            if argv == "valid" then
+                if not valids then
+                    valids = true
+                end
+            elseif not invalids and argv then
+                invalids = true
+            end
+        end
+    end
+    local data = setmetatable({}, dmt)
     for index, field in pairs(self) do
-        data[index] = field.value
+        if valids and field.valid then
+            data[index] = field.value
+        elseif invalids and field.invalid then
+            data[index] = field.value
+        end
     end
     return data
 end
