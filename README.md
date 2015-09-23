@@ -47,8 +47,8 @@ end
 
 -- By default this returns only valid fields
 local data = fields()
-local data = fields(true)
 local data = fields("valid")
+local data = fields(true)
 
 -- To get only invalid fields call
 local data = fields("invalid")
