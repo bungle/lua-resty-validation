@@ -58,7 +58,10 @@ local valid, fields, errors = form({ artist = "Eddie Vedder", number = 10 }, "in
 local valid, fields, errors = form({ artist = "Eddie Vedder", number = 10 }, "unvalidated")
 
 -- You may also use any of the combinations
-local valid, fields, errors = form({ artist = "Eddie Vedder", number = 10 }, "valid", "unvalidated")
+local valid, fields, errors = form({
+    artist = "Eddie Vedder",
+    number = 10
+}, "valid", "unvalidated")
 
 -- You can even call fields to get simple name, value table
 -- (in that case all the `nil`s are removed as well)
