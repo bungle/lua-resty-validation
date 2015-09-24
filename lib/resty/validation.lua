@@ -308,7 +308,7 @@ function factory.coalesce(...)
         for _, v in ipairs(args) do
             if v ~= nil then return true, v end
         end
-        return true, nil
+        return true
     end
 end
 
