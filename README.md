@@ -176,10 +176,10 @@ Validation factory consist of different validators and filters used to validate 
 * `table()`, check that value type is `table`
 * `userdata()`, check that value type is `userdata`
 * `func()` or `["function"]()`, check that value type is `function`
-* `thread`, check that value type is `thread`
-* `integer`, check that value type is `integer` (works only with Lua >= 5.3, `math.type(nbr) == 'integer'`)
-* `float`, check that value type is `float` (works only with Lua >= 5.3,   `math.type(nbr) == 'float'`)
-* `file`, check that value type is `file` (`io.type(value) == 'file'`)
+* `thread()`, check that value type is `thread`
+* `integer()`, check that value type is `integer` (works only with Lua >= 5.3, `math.type(nbr) == 'integer'`)
+* `float()`, check that value type is `float` (works only with Lua >= 5.3,   `math.type(nbr) == 'float'`)
+* `file()`, check that value type is `file` (`io.type(value) == 'file'`)
 * `abs()`, filters value and returns absolute value (`math.abs`)
 * `inf()`, checks that the value is `inf` or `-inf`
 * `nan()`, checks that the value is `nan`
