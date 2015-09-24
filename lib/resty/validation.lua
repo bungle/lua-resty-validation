@@ -337,7 +337,7 @@ local dmt = {}
 
 function dmt:__call(...)
     local argc = select("#", ...)
-    local data = {}
+    local data = setmetatable({}, dmt)
     if argc == 0 then
         for index, value in pairs(self) do
             data[index] = value
