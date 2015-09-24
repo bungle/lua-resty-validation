@@ -18,6 +18,7 @@ local mathtype = math.type
 local tointeger = math.tointeger
 local abs = math.abs
 local unpack = unpack or table.unpack
+local inf = 1 / 0
 
 if utf8 and utf8.len then
     len = utf8.len
@@ -52,6 +53,41 @@ function factory.iftype(t, truthy, falsy)
         end
         return true, falsy
     end
+end
+function factory.null()
+    return factory.type("nil")
+end
+factory["nil"] = factory.null
+function factory.boolean()
+    return factory.type("boolean")
+end
+function factory.number()
+    return factory.type("number")
+end
+function factory.string()
+    return factory.type("string")
+end
+function factory.table()
+    return factory.type("table")
+end
+function factory.userdata()
+    return factory.type("userdata")
+end
+function factory.func()
+    return factory.type("function")
+end
+factory["function"] = factory.func
+function factory.thread()
+    return factory.type("thread")
+end
+function factory.integer()
+    return factory.type("integer")
+end
+function factory.float()
+    return factory.type("float")
+end
+function factory.file()
+    return factory.type("file")
 end
 function factory.ifnil(truthy, falsy)
     return factory.iftype("nil", truthy, falsy)
@@ -99,6 +135,45 @@ function factory.iffalse(truthy, falsy)
             return true, truthy
         end
         return true, falsy
+    end
+end
+function factory.ifinf(truthy, falsy)
+    return function(value)
+        return true, value == inf or value == -inf and truthy or falsy
+    end
+end
+function factory.ifnan(truthy, falsy)
+    return function(value)
+        return true, value ~= value and truthy or falsy
+    end
+end
+function factory.iffinite(truthy, falsy)
+    return function(value)
+        if value ~= value then
+            return true, falsy
+        end
+        if value ~= inf and value ~= -inf then
+            return true, truthy
+        end
+        return true, falsy
+    end
+end
+function factory.inf()
+    return function(value)
+        return value == inf or value == -inf
+    end
+end
+function factory.nan()
+    return function(value)
+        return value ~= value
+    end
+end
+function factory.finite()
+    return function(value)
+        if value ~= value then
+            return false
+        end
+        return value ~= inf and value ~= -inf
     end
 end
 function factory.abs()
@@ -297,18 +372,19 @@ end
 factory.__index = factory
 
 local validators = setmetatable({
-    ["nil"]      = istype("nil"),
-    null         = istype("nil"),
-    boolean      = istype("boolean"),
-    number       = istype("number"),
-    string       = istype("string"),
-    userdata     = istype("userdata"),
-    ["function"] = istype("function"),
-    func         = istype("function"),
-    thread       = istype("thread"),
-    integer      = istype("integer"),
-    float        = istype("float"),
-    file         = istype("file"),
+    ["nil"]      = factory.null(),
+    null         = factory.null(),
+    boolean      = factory.boolean(),
+    number       = factory.number(),
+    string       = factory.string(),
+    table        = factory.table(),
+    userdata     = factory.userdata(),
+    ["function"] = factory.func(),
+    func         = factory.func(),
+    thread       = factory.thread(),
+    integer      = factory.integer(),
+    float        = factory.float(),
+    file         = factory.file(),
     tostring     = factory.tostring(),
     tonumber     = factory.tonumber(),
     tointeger    = factory.tointeger(),
@@ -316,6 +392,9 @@ local validators = setmetatable({
     tonil        = factory.tonil(),
     tonull       = factory.tonull(),
     abs          = factory.abs(),
+    inf          = factory.inf(),
+    nan          = factory.nan(),
+    finite       = factory.finite(),
     positive     = factory.positive(),
     negative     = factory.negative(),
     lower        = factory.lower(),

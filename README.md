@@ -114,12 +114,13 @@ MoonRocks repository for `lua-resty-validation`  is located here: https://rocks.
 Type validators can be used to validate the type of the validated value. These validators are argument-less
 validators (call them with dot `.`):
 
-* `nil` or `null` (as the nil is a reserved keyword in Lua)
+* `null` or `["nil"]` (as the nil is a reserved keyword in Lua)
 * `boolean`
 * `number`
 * `string`
+* `table`
 * `userdata`
-* `function` or `func` (as the function is a reserved keyword in Lua)
+* `func` or `["function"]` (as the function is a reserved keyword in Lua)
 * `thread`
 * `integer` (works only with Lua >= 5.3, `math.type(nbr) == 'integer'`)
 * `float` (works only with Lua >= 5.3,   `math.type(nbr) == 'float'`)
@@ -136,6 +137,9 @@ Other filters:
 
 * `tonil` or `tonull`
 * `abs`
+* `inf`
+* `nan`
+* `finite`
 * `positive`
 * `negative`
 * `lower`
@@ -165,6 +169,17 @@ Validation factory consist of different validators and filters used to validate 
 (call them with colon `:`):
 
 * `type(t)`, validates that the value is of type `t` (see Type Validators)
+* `nil()` or `["null"]()`, check that value type is `nil`
+* `boolean()`, check that value type is `boolean`
+* `number()`, check that value type is `number`
+* `string()`, check that value type is `string`
+* `table()`, check that value type is `table`
+* `userdata()`, check that value type is `userdata`
+* `func()` or `["function"]()`, check that value type is `function`
+* `thread`, check that value type is `thread`
+* `integer`, check that value type is `integer` (works only with Lua >= 5.3, `math.type(nbr) == 'integer'`)
+* `float`, check that value type is `float` (works only with Lua >= 5.3,   `math.type(nbr) == 'float'`)
+* `file`, check that value type is `file` (`io.type(value) == 'file'`)
 * `iftype(t, truthy, falsy)`, checks that value type `t` and if matches, returns `truthy`, otherwise returns `falsy`
 * `ifnil(truthy, falsy)` or `ifnull(truthy, falsy)`, checks that value type is `nil` and if matches, returns `truthy`, otherwise returns `falsy`
 * `ifboolean(truthy, falsy)`, checks that value type is `boolean` and if matches, returns `truthy`, otherwise returns `falsy`
@@ -178,7 +193,13 @@ Validation factory consist of different validators and filters used to validate 
 * `iffile(truthy, falsy)`, checks that value type is `file` and if matches, returns `truthy`, otherwise returns `falsy`
 * `iftrue(truthy, falsy)`, checks that value (or expression) evaluates to `true` and if yes, returns `truthy`, otherwise returns `falsy`
 * `iffalse(truthy, falsy)`, checks that value (or expression) evaluates to `false` and if yes, returns `truthy`, otherwise returns `falsy`
+* `ifinf(truthy, falsy)`, checks that value is `inf` or `-inf` and if yes, returns `truthy`, otherwise returns `falsy`
+* `ifnan(truthy, falsy)`, checks that value is `nan` and if yes, returns `truthy`, otherwise returns `falsy`
+* `iffinite(truthy, falsy)`, checks that value is not `nan`, `inf` or `-inf`, and if yes, returns `truthy`, otherwise returns `falsy`
 * `abs()`, filters value and returns absolute value (`math.abs`)
+* `inf()`, checks that the value is `inf` or `-inf`
+* `nan()`, checks that the value is `nan`
+* `finite()`, checks that the value is not `nan`, `inf` or `-inf`
 * `positive()`, validates that the value is positive (`> 0`)
 * `negative()`, validates that the value is negative (`< 0`)
 * `min(min)`, validates that the value is at least `min` (`>=`)
