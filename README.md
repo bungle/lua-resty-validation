@@ -43,23 +43,38 @@ else
         fields.number.value, fields.number.error, fields.number.invalid)
 end
 
--- You can even call fields to get simple name => value table
+-- If you want all the fields (valid, invalid, and unvalidated) call
+local valid, fields, errors = form{ artist = "Eddie Vedder", number = 10 }
+-- or
+local valid, fields, errors = form({ artist = "Eddie Vedder", number = 10 }, "all")
 
--- By default this returns only valid fields
+-- If you only want valid fields, you can call
+local valid, fields, errors = form({ artist = "Eddie Vedder", number = 10 }, "valid")
+
+-- If you only want invalid fields, you can call
+local valid, fields, errors = form({ artist = "Eddie Vedder", number = 10 }, "invalid")
+
+-- If you only want unvalidated fields, you can call
+local valid, fields, errors = form({ artist = "Eddie Vedder", number = 10 }, "unvalidated")
+
+-- You may also use any of the combinations
+local valid, fields, errors = form({ artist = "Eddie Vedder", number = 10 }, "valid", "unvalidated")
+
+-- You can even call fields to get simple name, value table
+-- (in that case all the `nil`s are removed as well)
+
+-- By default this returns only the valid fields' names and values
 local data = fields()
 local data = fields("valid")
-local data = fields(true)
 
--- To get only invalid fields call
+-- To get only invalid the fields' names and values call
 local data = fields("invalid")
-local data = fields(false, true)
 
--- To get both use
+-- To get both call
 local data = fields("all")
 local data = fields("valid", "invalid")
-local data = fields(true, true)
 
--- This doesn't stop here. You may also want to get only some fields.
+-- This doesn't stop here. You may also want to get only some fields by their name.
 -- You can do that by calling
 local data = data{ "artist" }
 ```

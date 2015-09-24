@@ -339,9 +339,7 @@ function dmt:__call(...)
     local argc = select("#", ...)
     local data = setmetatable({}, dmt)
     if argc == 0 then
-        for index, value in pairs(self) do
-            data[index] = value
-        end
+        return self
     else
         for _, index in ipairs{ ... } do
             if self[index] then
@@ -355,38 +353,27 @@ end
 local fields = {}
 
 function fields:__call(...)
-    local valids, invalids
+    local valid, invalid
     local argc = select("#", ...)
     if argc == 0 then
-        valids = true
+        valid = true
     else
-        local argv = select(1, ...)
-        if argv == "valid" then
-            valids = true
-        elseif argv == "invalid" then
-            invalids = true
-        elseif argv == "all" then
-            valids = true
-            invalids = true
-        elseif argv then
-            valids = true
-        end
-        if argc > 1 then
-            argv = select(2, ...)
-            if argv == "valid" then
-                if not valids then
-                    valids = true
-                end
-            elseif not invalids and argv then
-                invalids = true
+        for _, v in ipairs({ ... }) do
+            if v == "valid" then
+                valid = true
+            elseif v == "invalid" then
+                invalid = true
+            elseif v == "all" then
+                valid = true
+                invalid = true
             end
         end
     end
     local data = setmetatable({}, dmt)
     for index, field in pairs(self) do
-        if valids and field.valid then
+        if valid and field.valid then
             data[index] = field.value
-        elseif invalids and field.invalid then
+        elseif invalid and field.invalid then
             data[index] = field.value
         end
     end
@@ -395,13 +382,32 @@ end
 
 local mt = {}
 
-function mt:__call(t)
+function mt:__call(t, ...)
+    local valid, invalid, unvalidated
+    local argc = select("#", ...)
+    if argc == 0 then
+        valid, invalid, unvalidated = true, true, true
+    else
+        for _, v in ipairs({ ... }) do
+            if v == "valid" then
+                valid = true
+            elseif v == "invalid" then
+                invalid = true
+            elseif v == "unvalidated" then
+                unvalidated = true
+            elseif v == "all" then
+                valid = true
+                invalid = true
+                unvalidated = true
+            end
+        end
+    end
     local errors  = {}
     local results = setmetatable({}, fields)
     for index, func in pairs(self) do
         local input = t[index]
         local ok, value = func(input)
-        if ok then
+        if ok and valid then
             results[index] = setmetatable({
                 name = index,
                 input = input,
@@ -410,7 +416,7 @@ function mt:__call(t)
                 invalid = false,
                 error = nil
             }, field)
-        else
+        elseif invalid then
             errors[#errors + 1] = index
             errors[index] = value
             results[index] = setmetatable({
@@ -423,16 +429,18 @@ function mt:__call(t)
             }, field)
         end
     end
-    for index, input in pairs(t) do
-        if not results[index] then
-            results[index] = setmetatable({
-                name = index,
-                input = input,
-                value = input,
-                valid = true,
-                invalid = false,
-                error = nil
-            }, field)
+    if unvalidated then
+        for index, input in pairs(t) do
+            if not results[index] then
+                results[index] = setmetatable({
+                    name = index,
+                    input = input,
+                    value = input,
+                    valid = true,
+                    invalid = false,
+                    error = nil
+                }, field)
+            end
         end
     end
     return #errors == 0, results, errors
