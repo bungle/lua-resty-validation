@@ -70,7 +70,7 @@ local valid, fields, errors = form({
 local data = fields()
 local data = fields("valid")
 
--- To get only invalid the fields' names and values call
+-- To get only the invalid fields' names and values call
 local data = fields("invalid")
 
 -- To get both call
