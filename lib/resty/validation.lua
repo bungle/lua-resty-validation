@@ -19,6 +19,7 @@ local mathtype = math.type
 local tointeger = math.tointeger
 local abs = math.abs
 local unpack = unpack or table.unpack
+local nothing = {}
 local inf = 1 / 0
 
 if utf8 and utf8.len then
@@ -227,7 +228,7 @@ function factory.toboolean()
 end
 function factory.tonil()
     return function()
-        return true, nil
+        return true, nothing
     end
 end
 factory.tonull = factory.tonil
@@ -472,18 +473,23 @@ function group()
 end
 
 local function validation(func, parent_f, parent, method)
-    return setmetatable({ new = group, validators = validators }, {
+    return setmetatable({ new = group, nothing = nothing, validators = validators }, {
         __index = function(self, index)
             return validation(function(...)
                 local valid, value = func(...)
                 if not valid then error(index, 0) end
-                local validator = rawget(self.validators, index)
+                local validator = rawget(validators, index)
                 if not validator then
                     error(index, 0)
                 end
                 local valid, v = validator(value)
-                if not valid then error(index, 0)  end
-                return valid, v or value
+                if not valid then error(index, 0) end
+                if v == nothing then
+                    v = nil
+                elseif v == nil then
+                    v = value
+                end
+                return true, v
             end, func, self, index)
         end,
         __call = function(_, self, ...)
@@ -495,7 +501,7 @@ local function validation(func, parent_f, parent, method)
                     local valid, value = parent_f(...)
                     if not valid then error(method, 0) end
                     if sub(method, 1, 2) == "if" then
-                        local validator = rawget(getmetatable(self.validators), sub(method, 3))
+                        local validator = rawget(getmetatable(validators), sub(method, 3))
                         if not validator then error(method, 0) end
                         if n > 2 then
                             valid, v = validator(unpack(args, 1, n - 2))(value)
@@ -504,13 +510,17 @@ local function validation(func, parent_f, parent, method)
                         end
                         valid, v = true, valid and args[n - 1] or args[n]
                     else
-                        local validator = rawget(getmetatable(self.validators), method)
+                        local validator = rawget(getmetatable(validators), method)
                         if not validator then error(method, 0) end
                         valid, v = validator(unpack(args, 1, n))(value)
-                        v = v or value
+                        if v == nothing then
+                            v = nil
+                        elseif v == nil then
+                            v = value
+                        end
                     end
                     if not valid then error(method, 0) end
-                    return valid, v
+                    return true, v
                 end)
             end
             local ok, error, value = pcall(func, self, ...)
