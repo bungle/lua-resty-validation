@@ -247,7 +247,7 @@ local ok, value = validation:ifbetween(1, 10
 
 
 So the last 2 arguments to conditional validation factory validators are the `truthy` and `falsy` values.
-Every other argument is passed to the validator actual validation factory validator.
+Every other argument is passed to the actual validation factory validator.
 
 #### Examples
 
