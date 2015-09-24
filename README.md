@@ -235,12 +235,12 @@ local ok, value = validation:ifnil(
     "No, you did not supply a nil value")("non nil")
     
 -- ok == true, value == "Yes, the number is betweeb 1 and 10"    
-local ok, value = validation:ifbetween(1, 10
+local ok, value = validation:ifbetween(1, 10,
     "Yes, the number is betweeb 1 and 10",
     "No, the number is not between 1 and 10")(5)
 
 -- ok == true, value == "No, the number is not between 1 and 10"
-local ok, value = validation:ifbetween(1, 10
+local ok, value = validation:ifbetween(1, 10,
     "Yes, the number is betweeb 1 and 10",
     "No, the number is not between 1 and 10")(100)
 ```
