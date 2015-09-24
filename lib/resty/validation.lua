@@ -11,6 +11,7 @@ local match = string.match
 local lower = string.lower
 local upper = string.upper
 local gsub = string.gsub
+local sub = string.sub
 local len = string.len
 local reverse = string.reverse
 local iotype = io.type
@@ -88,75 +89,6 @@ function factory.float()
 end
 function factory.file()
     return factory.type("file")
-end
-function factory.ifnil(truthy, falsy)
-    return factory.iftype("nil", truthy, falsy)
-end
-factory.ifnull = factory.ifnil
-function factory.ifboolean(truthy, falsy)
-    return factory.iftype("boolean", truthy, falsy)
-end
-function factory.ifnumber(truthy, falsy)
-    return factory.iftype("number", truthy, falsy)
-end
-function factory.ifstring(truthy, falsy)
-    return factory.iftype("string", truthy, falsy)
-end
-function factory.ifuserdata(truthy, falsy)
-    return factory.iftype("userdata", truthy, falsy)
-end
-function factory.iffunction(truthy, falsy)
-    return factory.iftype("function", truthy, falsy)
-end
-factory.iffunc = factory.iffunction
-function factory.ifthread(truthy, falsy)
-    return factory.iftype("thread", truthy, falsy)
-end
-function factory.ifinteger(truthy, falsy)
-    return factory.iftype("integer", truthy, falsy)
-end
-function factory.iffloat(truthy, falsy)
-    return factory.iftype("float", truthy, falsy)
-end
-function factory.iffile(truthy, falsy)
-    return factory.iftype("file", truthy, falsy)
-end
-function factory.iftrue(truthy, falsy)
-    return function(value)
-        if value then
-            return true, truthy
-        end
-        return true, falsy
-    end
-end
-function factory.iffalse(truthy, falsy)
-    return function(value)
-        if not value then
-            return true, truthy
-        end
-        return true, falsy
-    end
-end
-function factory.ifinf(truthy, falsy)
-    return function(value)
-        return true, value == inf or value == -inf and truthy or falsy
-    end
-end
-function factory.ifnan(truthy, falsy)
-    return function(value)
-        return true, value ~= value and truthy or falsy
-    end
-end
-function factory.iffinite(truthy, falsy)
-    return function(value)
-        if value ~= value then
-            return true, falsy
-        end
-        if value ~= inf and value ~= -inf then
-            return true, truthy
-        end
-        return true, falsy
-    end
 end
 function factory.inf()
     return function(value)
@@ -347,6 +279,16 @@ function factory.rtrim(pattern)
             return true, (gsub(value, pattern, ""))
         end
         return false
+    end
+end
+function factory.starts(starts)
+    return function(value)
+        return sub(value, 1, len(starts)) == starts
+    end
+end
+function factory.ends(ends)
+    return function(value)
+        return ends == '' or sub(value, -len(ends)) == ends
     end
 end
 function factory.reverse()
@@ -549,15 +491,26 @@ local function validation(func, parent_f, parent, method)
                 local n = select("#", ...)
                 local args = { ... }
                 return validation(function(...)
+                    local v
                     local valid, value = parent_f(...)
                     if not valid then error(method, 0) end
-                    local validator = rawget(getmetatable(self.validators), method)
-                    if not validator then
-                        error(method, 0)
+                    if sub(method, 1, 2) == "if" then
+                        local validator = rawget(getmetatable(self.validators), sub(method, 3))
+                        if not validator then error(method, 0) end
+                        if n > 2 then
+                            valid, v = validator(unpack(args, 1, n - 2))(value)
+                        else
+                            valid, v = validator()(value)
+                        end
+                        valid, v = true, valid and args[n - 1] or args[n]
+                    else
+                        local validator = rawget(getmetatable(self.validators), method)
+                        if not validator then error(method, 0) end
+                        valid, v = validator(unpack(args, 1, n))(value)
+                        v = v or value
                     end
-                    local valid, v = validator(unpack(args, 1, n))(value)
                     if not valid then error(method, 0) end
-                    return valid, v or value
+                    return valid, v
                 end)
             end
             local ok, error, value = pcall(func, self, ...)

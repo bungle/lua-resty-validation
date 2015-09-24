@@ -180,22 +180,6 @@ Validation factory consist of different validators and filters used to validate 
 * `integer`, check that value type is `integer` (works only with Lua >= 5.3, `math.type(nbr) == 'integer'`)
 * `float`, check that value type is `float` (works only with Lua >= 5.3,   `math.type(nbr) == 'float'`)
 * `file`, check that value type is `file` (`io.type(value) == 'file'`)
-* `iftype(t, truthy, falsy)`, checks that value type `t` and if matches, returns `truthy`, otherwise returns `falsy`
-* `ifnil(truthy, falsy)` or `ifnull(truthy, falsy)`, checks that value type is `nil` and if matches, returns `truthy`, otherwise returns `falsy`
-* `ifboolean(truthy, falsy)`, checks that value type is `boolean` and if matches, returns `truthy`, otherwise returns `falsy`
-* `ifnumber(truthy, falsy)`, checks that value type is `number` and if matches, returns `truthy`, otherwise returns `falsy`
-* `ifstring(truthy, falsy)`, checks that value type is `string` and if matches, returns `truthy`, otherwise returns `falsy`
-* `ifuserdata(truthy, falsy)`, checks that value type is `userdata` and if matches, returns `truthy`, otherwise returns `falsy`
-* `iffunction(truthy, falsy)` or `iffunc(truthy, falsy)`, checks that value type is `funtion` and if matches, returns `truthy`, otherwise returns `falsy`
-* `ifthread(truthy, falsy)`, checks that value type is `thread` and if matches, returns `truthy`, otherwise returns `falsy`
-* `ifinteger(truthy, falsy)`, checks that value type is `integer` and if matches, returns `truthy`, otherwise returns `falsy` (works only with Lua >= 5.3)
-* `iffloat(truthy, falsy)`, checks that value type is `float` and if matches, returns `truthy`, otherwise returns `falsy` (works only with Lua >= 5.3)
-* `iffile(truthy, falsy)`, checks that value type is `file` and if matches, returns `truthy`, otherwise returns `falsy`
-* `iftrue(truthy, falsy)`, checks that value (or expression) evaluates to `true` and if yes, returns `truthy`, otherwise returns `falsy`
-* `iffalse(truthy, falsy)`, checks that value (or expression) evaluates to `false` and if yes, returns `truthy`, otherwise returns `falsy`
-* `ifinf(truthy, falsy)`, checks that value is `inf` or `-inf` and if yes, returns `truthy`, otherwise returns `falsy`
-* `ifnan(truthy, falsy)`, checks that value is `nan` and if yes, returns `truthy`, otherwise returns `falsy`
-* `iffinite(truthy, falsy)`, checks that value is not `nan`, `inf` or `-inf`, and if yes, returns `truthy`, otherwise returns `falsy`
 * `abs()`, filters value and returns absolute value (`math.abs`)
 * `inf()`, checks that the value is `inf` or `-inf`
 * `nan()`, checks that the value is `nan`
@@ -226,8 +210,44 @@ Validation factory consist of different validators and filters used to validate 
 * `trim([pattern])`, trims whitespace (you may use pattern as well) from the left and the right
 * `ltrim([pattern])`, trims whitespace (you may use pattern as well) from the left
 * `rtrim([pattern])`, trims whitespace (you may use pattern as well) from the right
+* `starts(starts)`, checks if string starts with `starts`
+* `ends(ends)`, checks if string ends with `ends`
 * `reverse`, reverses the value (string or number)
 * `coalesce(...)`, if the value is nil, returns first non-nil value passed as arguments
+
+#### Conditional Validation Factory Validators
+
+For all the Validation Factory Validators there is a conditional version that always validates to true,
+but where you can replace the actual value depending whether the original validator validated. Hey, this
+is easier to show than say:
+
+```lua
+local validation = require "resty.validation"
+
+-- ok == true, value == "Yes, the value is nil"
+local ok, value = validation:ifnil(
+    "Yes, the value is nil",
+    "No, you did not supply a nil value")(nil)
+
+-- ok == true, value == "No, you did not supply a nil value"
+local ok, value = validation:ifnil(
+    "Yes, the value is nil",
+    "No, you did not supply a nil value")("non nil")
+    
+-- ok == true, value == "Yes, the number is betweeb 1 and 10"    
+local ok, value = validation:ifbetween(1, 10
+    "Yes, the number is betweeb 1 and 10",
+    "No, the number is not between 1 and 10")(5)
+
+-- ok == true, value == "No, the number is not between 1 and 10"
+local ok, value = validation:ifbetween(1, 10
+    "Yes, the number is betweeb 1 and 10",
+    "No, the number is not between 1 and 10")(100)
+```
+
+
+So the last 2 arguments to conditional validation factory validators are the `truthy` and `falsy` values.
+Every other argument is passed to the validator actual validation factory validator.
 
 #### Examples
 
