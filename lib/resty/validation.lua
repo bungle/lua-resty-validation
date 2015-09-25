@@ -167,8 +167,9 @@ function factory.indivisible(number)
     end
 end
 function factory.len(min, max)
-    if not max then max = min end
-    if max < min then min, max = max, min end
+    if max then
+        if max < min then min, max = max, min end
+    end
     return function(value)
         local l
         if type(value) == "string" then l = len(value) else l = #value end

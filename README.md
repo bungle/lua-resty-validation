@@ -192,10 +192,9 @@ Validation factory consist of different validators and filters used to validate 
 * `outside(min[, max = min])`, validates that the value is not between `min` and `max`
 * `divisible(number)`, validates that the value is divisible with `number`
 * `indivisible(number)`, validates that the value is not divisible with `number`
-* `len(min[, max = min])`, validates that the length (`#` or `string.len` or `utf8.len` (if available)) of the value is exactly `min`, at least `min`, at most `max` or between `min` and `max`
+* `len(min[, max = min])`, validates that the length (`#` or `string.len` or `utf8.len` (if available)) of the value is exactly `min` or between `min` and `max`
 * `minlen(min)`, validates that the length of the value is at least `min`
-* `maxlen(min)`, validates that the length of the value is at most `max`
- most `max` or between `min` and `max`
+* `maxlen(max)`, validates that the length of the value is at most `max`
 * `equals(equal)` or `equal(equal)`, validates that the value is exactly something
 * `unequals(equal)` or `unequal(equal)`, validates that the value is not exactly something
 * `oneof(...)`, validates that the value is equal to one of the supplied arguments
