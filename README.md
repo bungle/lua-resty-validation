@@ -196,8 +196,10 @@ Validation factory consist of different validators and filters used to validate 
 * `minlen(min)`, validates that the length of the value is at least `min`
 * `maxlen(min)`, validates that the length of the value is at most `max`
  most `max` or between `min` and `max`
-* `equals(values)` or `equal(values)`, validates that the value is exactly something or one of the values
-* `unequals(values)` or `unequal(values)`, validates that the value is not exactly something or one of the values.
+* `equals(equal)` or `equal(equal)`, validates that the value is exactly something
+* `unequals(equal)` or `unequal(equal)`, validates that the value is not exactly something
+* `oneof(...)`, validates that the value is equal to one of the supplied arguments
+* `noneof(...)`, validates that the value is not equal to any of the supplied arguments
 * `match(pattern[, init])`, validates that the value matches (`string.match`) the pattern
 * `unmatch(pattern[, init])`, validates that the value does not match (`string.match`) the pattern
 * `tostring()`, converts value to string

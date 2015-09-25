@@ -194,6 +194,28 @@ function factory.unequals(unequal)
     end
 end
 factory.unequal = factory.unequals
+function factory.oneof(...)
+    local args = { ... }
+    return function(value)
+        for _, v in ipairs(args) do
+            if v == value then
+                return true
+            end
+        end
+        return false
+    end
+end
+function factory.noneof(...)
+    local args = { ... }
+    return function(value)
+        for _, v in ipairs(args) do
+            if v == value then
+                return false
+            end
+        end
+        return true
+    end
+end
 function factory.match(pattern, init)
     return function(value)
         return match(value, pattern, init) ~= nil
