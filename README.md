@@ -28,14 +28,14 @@ end
 local valid, e = validation.capitalize("abc") -- valid = true,  e = "Abc"
 
 -- You can also group validate many values
-local form = validation.new()
-form.artist = validation.string:minlen(5)
-form.number = validation:equal(10)
+local group = validation.new()
+group.artist = validation.string:minlen(5)
+group.number = validation:equal(10)
 
-local valid, fields, errors = form{ artist = "Eddie Vedder", number = 10 }
+local valid, fields, errors = group{ artist = "Eddie Vedder", number = 10 }
 
 if valid then
-  print("all the form fields are valid")
+  print("all the group fields are valid")
 else
   print(fields.artist.name,  fields.artist.valid, fields.artist.input,
         fields.artist.value, fields.artist.error, fields.artist.invalid)
@@ -44,21 +44,21 @@ else
 end
 
 -- If you want all the fields (valid, invalid, and unvalidated) call
-local valid, fields, errors = form{ artist = "Eddie Vedder", number = 10 }
+local valid, fields, errors = group{ artist = "Eddie Vedder", number = 10 }
 -- or
-local valid, fields, errors = form({ artist = "Eddie Vedder", number = 10 }, "all")
+local valid, fields, errors = group({ artist = "Eddie Vedder", number = 10 }, "all")
 
 -- If you only want valid fields, you can call
-local valid, fields, errors = form({ artist = "Eddie Vedder", number = 10 }, "valid")
+local valid, fields, errors = group({ artist = "Eddie Vedder", number = 10 }, "valid")
 
 -- If you only want invalid fields, you can call
-local valid, fields, errors = form({ artist = "Eddie Vedder", number = 10 }, "invalid")
+local valid, fields, errors = group({ artist = "Eddie Vedder", number = 10 }, "invalid")
 
 -- If you only want unvalidated fields, you can call
-local valid, fields, errors = form({ artist = "Eddie Vedder", number = 10 }, "unvalidated")
+local valid, fields, errors = group({ artist = "Eddie Vedder", number = 10 }, "unvalidated")
 
 -- You may also use any of the combinations
-local valid, fields, errors = form({
+local valid, fields, errors = group({
     artist = "Eddie Vedder",
     number = 10
 }, "valid", "unvalidated")

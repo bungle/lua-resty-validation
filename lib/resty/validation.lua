@@ -460,28 +460,35 @@ function mt:__call(t, ...)
     local errors  = {}
     local results = setmetatable({}, fields)
     for index, func in pairs(self) do
-        local input = t[index]
-        local ok, value = func(input)
-        if ok and valid then
-            results[index] = setmetatable({
-                name = index,
-                input = input,
-                value = value,
-                valid = true,
-                invalid = false,
-                error = nil
-            }, field)
-        elseif invalid then
-            errors[#errors + 1] = index
-            errors[index] = value
-            results[index] = setmetatable({
-                name = index,
-                input = input,
-                value = input,
-                valid = false,
-                invalid = true,
-                error = err
-            }, field)
+        if type(index) ~= "table" then
+            index = { index }
+        end
+        for _, name in ipairs(index) do
+            if not results[name] or results[name].valid then
+                local input = t[name]
+                local ok, value = func(input)
+                if ok and valid then
+                    results[name] = setmetatable({
+                        name = name,
+                        input = input,
+                        value = value,
+                        valid = true,
+                        invalid = false,
+                        error = nil
+                    }, field)
+                elseif invalid then
+                    errors[#errors + 1] = name
+                    errors[name] = value
+                    results[name] = setmetatable({
+                        name = name,
+                        input = input,
+                        value = input,
+                        valid = false,
+                        invalid = true,
+                        error = err
+                    }, field)
+                end
+            end
         end
     end
     if unvalidated then
