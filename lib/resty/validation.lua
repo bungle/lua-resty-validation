@@ -178,10 +178,20 @@ function factory.len(min, max)
     end
 end
 function factory.minlen(min)
-    return factory.len(min)
+    return function(value)
+        local l
+        if type(value) == "string" then l = len(value) else l = #value end
+        if type(l)     ~= "number" then return false end
+        return l >= min
+    end
 end
 function factory.maxlen(max)
-    return factory.len(nil, max)
+    return function(value)
+        local l
+        if type(value) == "string" then l = len(value) else l = #value end
+        if type(l)     ~= "number" then return false end
+        return l <= max
+    end
 end
 function factory.equals(equal)
     return function(value)
