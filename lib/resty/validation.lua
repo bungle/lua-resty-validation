@@ -375,15 +375,10 @@ local validators = setmetatable({
     rtrim        = factory.rtrim(),
     reverse      = factory.reverse()
 }, factory)
-local field = {}
-function field:__tostring()
-    if type(self.value == "string") then return self.value end
-    return tostring(self.value)
-end
-local dmt = {}
-function dmt:__call(...)
+local data = {}
+function data:__call(...)
     local argc = select("#", ...)
-    local data = setmetatable({}, dmt)
+    local data = setmetatable({}, data)
     if argc == 0 then
         return self
     else
@@ -397,7 +392,7 @@ function dmt:__call(...)
 end
 local fields = {}
 function fields:__call(...)
-    local valid, invalid
+    local valid, invalid, validatad, unvalidated
     local argc = select("#", ...)
     if argc == 0 then
         valid = true
@@ -407,32 +402,47 @@ function fields:__call(...)
                 valid = true
             elseif v == "invalid" then
                 invalid = true
+            elseif v == "validated" then
+                validated = true
+            elseif v == "unvalidated" then
+                unvalidated = true
             elseif v == "all" then
                 valid = true
                 invalid = true
+                validated = true
+                unvalidated = true
             end
         end
     end
-    local data = setmetatable({}, dmt)
+    local data = setmetatable({}, data)
     for index, field in pairs(self) do
         if valid and field.valid then
             data[index] = field.value
         elseif invalid and field.invalid then
             data[index] = field.value
+        elseif validated and field.validated then
+            data[index] = field.value
+        elseif unvalidated and field.unvalidated then
+            data[index] = field.value
         end
     end
     return data
 end
+local field = {}
+function field:__tostring()
+    if type(self.value == "string") then return self.value end
+    return tostring(self.value)
+end
 local irules = {}
 local grules = {}
 local operators = { "<=", ">=", "==", "~=", "<", ">" }
-local mt = {}
-mt.__index = mt
-function mt:add(func)
+local group = {}
+group.__index = group
+function group:add(func)
     local gr = self[grules]
     gr[#gr+1] = func
 end
-function mt:compare(comparison)
+function group:compare(comparison)
     local s, e, o
     for _, operator in ipairs(operators) do
         s, e = find(comparison, operator, 2, true)
@@ -498,7 +508,7 @@ function mt:compare(comparison)
         end
     end)
 end
-function mt:__call(t)
+function group:__call(t)
     local ir, results, errors = self[irules], setmetatable({}, fields), nil
     for _, v in ipairs(ir) do
         local name, func = v.name, v.func
@@ -552,7 +562,7 @@ function mt:__call(t)
     return errors == nil, results, errors
 end
 function new(rules)
-    local self = setmetatable({ [irules] = {}, [grules] = {} }, mt)
+    local self = setmetatable({ [irules] = {}, [grules] = {} }, group)
     if rules then
         local ir = self[irules]
         for index, func in pairs(rules) do
@@ -568,7 +578,7 @@ function new(rules)
     return self
 end
 local function validation(func, parent_f, parent, method)
-    return setmetatable({ new = new, group = mt, nothing = nothing, validators = validators }, {
+    return setmetatable({ new = new, group = group, nothing = nothing, validators = validators }, {
         __index = function(self, index)
             return validation(function(...)
                 local valid, value = func(...)
