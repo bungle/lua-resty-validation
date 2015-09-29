@@ -10,6 +10,7 @@ local error = error
 local match = string.match
 local lower = string.lower
 local upper = string.upper
+local find = string.find
 local gsub = string.gsub
 local sub = string.sub
 local len = string.len
@@ -21,11 +22,9 @@ local abs = math.abs
 local unpack = unpack or table.unpack
 local nothing = {}
 local inf = 1 / 0
-
 if utf8 and utf8.len then
     len = utf8.len
 end
-
 local function istype(t)
     if t == "integer" or t == "float" then
         return function(value)
@@ -41,9 +40,7 @@ local function istype(t)
         end
     end
 end
-
 local factory = {}
-
 function factory.type(t)
     return istype(t)
 end
@@ -344,9 +341,7 @@ function factory.coalesce(...)
         return true
     end
 end
-
 factory.__index = factory
-
 local validators = setmetatable({
     ["nil"]      = factory.null(),
     null         = factory.null(),
@@ -380,16 +375,12 @@ local validators = setmetatable({
     rtrim        = factory.rtrim(),
     reverse      = factory.reverse()
 }, factory)
-
 local field = {}
-
 function field:__tostring()
     if type(self.value == "string") then return self.value end
     return tostring(self.value)
 end
-
 local dmt = {}
-
 function dmt:__call(...)
     local argc = select("#", ...)
     local data = setmetatable({}, dmt)
@@ -404,9 +395,7 @@ function dmt:__call(...)
     end
     return data
 end
-
 local fields = {}
-
 function fields:__call(...)
     local valid, invalid
     local argc = select("#", ...)
@@ -434,86 +423,152 @@ function fields:__call(...)
     end
     return data
 end
-
+local irules = {}
+local grules = {}
+local operators = { "<=", ">=", "==", "~=", "<", ">" }
 local mt = {}
-
-function mt:__call(t, ...)
-    local valid, invalid, unvalidated
-    local argc = select("#", ...)
-    if argc == 0 then
-        valid, invalid, unvalidated = true, true, true
-    else
-        for _, v in ipairs({ ... }) do
-            if v == "valid" then
-                valid = true
-            elseif v == "invalid" then
-                invalid = true
-            elseif v == "unvalidated" then
-                unvalidated = true
-            elseif v == "all" then
-                valid = true
-                invalid = true
-                unvalidated = true
-            end
+mt.__index = mt
+function mt:add(func)
+    local gr = self[grules]
+    gr[#gr+1] = func
+end
+function mt:compare(comparison)
+    local s, e, o
+    for _, operator in ipairs(operators) do
+        s, e = find(comparison, operator, 2, true)
+        if s then
+            o = operator
+            break
         end
     end
-    local errors  = {}
-    local results = setmetatable({}, fields)
-    for index, func in pairs(self) do
-        if type(index) ~= "table" then
-            index = { index }
+    local f1 = (gsub(sub(comparison, 1, s - 1), "%s+$", ""):gsub("^%s+", ""))
+    local f2 = (gsub(sub(comparison,    e + 1), "%s+$", ""):gsub("^%s+", ""))
+    self:add(function(fields)
+        if not fields[f1] then
+            fields[f1] = setmetatable({
+                name = f1,
+                valid = true,
+                invalid = false,
+                validated = true,
+                unvalidated = false
+            }, field)
         end
-        for _, name in ipairs(index) do
-            if not results[name] or results[name].valid then
-                local input = t[name]
-                local ok, value = func(input)
-                if ok and valid then
-                    results[name] = setmetatable({
-                        name = name,
-                        input = input,
-                        value = value,
-                        valid = true,
-                        invalid = false,
-                        error = nil
-                    }, field)
-                elseif invalid then
-                    errors[#errors + 1] = name
-                    errors[name] = value
-                    results[name] = setmetatable({
-                        name = name,
-                        input = input,
-                        value = input,
-                        valid = false,
-                        invalid = true,
-                        error = err
-                    }, field)
+        if not fields[f2] then
+            fields[f2] = setmetatable({
+                name = f2,
+                valid = true,
+                invalid = false,
+                validated = true,
+                unvalidated = false
+            }, field)
+        end
+        local v1 = fields[f1]
+        local v2 = fields[f2]
+        if v1.valid and v2.valid then
+            if v1.unvalidated then
+                v1.validated = true
+                v1.unvalidated = false
+            end
+            if v2.unvalidated then
+                v2.validated = true
+                v2.unvalidated = false
+            end
+            local valid, x, y = true, v1.value, v2.value
+            if o == "<=" then
+                valid = x <= y
+            elseif o == ">=" then
+                valid = x >= y
+            elseif o == "==" then
+                valid = x == y
+            elseif o == "~=" then
+                valid = x ~= y
+            elseif o == "<" then
+                valid = x < y
+            elseif o == ">" then
+                valid = x > y
+            end
+            if not valid then
+                v1.valid = false
+                v1.invalid = true
+                v1.error = "compare"
+                v2.valid = false
+                v2.invalid = true
+                v2.error = "compare"
+            end
+        end
+    end)
+end
+function mt:__call(t)
+    local ir, results, errors = self[irules], setmetatable({}, fields), nil
+    for _, v in ipairs(ir) do
+        local name, func = v.name, v.func
+        local fld
+        if results[name] then
+            fld = results[name]
+        else
+            local input = t[name]
+            fld = setmetatable({
+                name = name,
+                input = input,
+                value = input,
+                valid = true,
+                invalid = false,
+                validated = true,
+                unvalidated = false
+            }, field)
+        end
+        if fld.valid then
+            local ok, value = func(fld.value)
+            if ok then
+                fld.value = value
+            else
+                if errors == nil then
+                    errors = {}
                 end
+                errors[name] = value
+                fld.valid = false
+                fld.invalid = true
+                fld.error = value
             end
         end
     end
-    if unvalidated then
-        for index, input in pairs(t) do
-            if not results[index] then
-                results[index] = setmetatable({
-                    name = index,
-                    input = input,
-                    value = input,
-                    valid = true,
-                    invalid = false,
-                    error = nil
-                }, field)
+    for name, input in pairs(t) do
+        if not results[name] then
+            results[name] = setmetatable({
+                name = name,
+                input = input,
+                value = input,
+                valid = true,
+                invalid = false,
+                validated = false,
+                unvalidated = true
+            }, field)
+        end
+    end
+    local gr = self[grules]
+    for _, func in ipairs(gr) do
+        func(results)
+    end
+    return errors == nil, results, errors
+end
+function new(rules)
+    local self = setmetatable({ [irules] = {}, [grules] = {} }, mt)
+    if rules then
+        local ir = self[irules]
+        for index, func in pairs(rules) do
+            if type(index) == "table" then
+                for _, name in ipairs(index) do
+                    ir[#ir+1] = { name = name, func = func }
+                end
+            else
+                ir[#ir+1] = { name = index, func = func }
             end
         end
     end
-    return #errors == 0, results, errors
+    return self
 end
-
-function group()
-    return setmetatable({}, mt)
-end
-
 local function validation(func, parent_f, parent, method)
-    return setmetatable({ new = group, nothing = nothing, validators = validators }, {
+    return setmetatable({ new = new, group = mt, nothing = nothing, validators = validators }, {
         __index = function(self, index)
             return validation(function(...)
                 local valid, value = func(...)
@@ -571,7 +626,6 @@ local function validation(func, parent_f, parent, method)
         end
     })
 end
-
 return validation(function(...)
     return true, ...
 end)

@@ -28,11 +28,12 @@ end
 local valid, e = validation.capitalize("abc") -- valid = true,  e = "Abc"
 
 -- You can also group validate many values
-local group = validation.new()
-group.artist = validation.string:minlen(5)
-group.number = validation:equal(10)
+local group = validation.new{
+    artist = validation.string:minlen(5),
+    number = validation.tonumber:equal(10)
+}
 
-local valid, fields, errors = group{ artist = "Eddie Vedder", number = 10 }
+local valid, fields, errors = group{ artist = "Eddie Vedder", number = "10" }
 
 if valid then
   print("all the group fields are valid")
@@ -42,26 +43,6 @@ else
   print(fields.number.name,  fields.number.valid, fields.number.input,
         fields.number.value, fields.number.error, fields.number.invalid)
 end
-
--- If you want all the fields (valid, invalid, and unvalidated) call
-local valid, fields, errors = group{ artist = "Eddie Vedder", number = 10 }
--- or
-local valid, fields, errors = group({ artist = "Eddie Vedder", number = 10 }, "all")
-
--- If you only want valid fields, you can call
-local valid, fields, errors = group({ artist = "Eddie Vedder", number = 10 }, "valid")
-
--- If you only want invalid fields, you can call
-local valid, fields, errors = group({ artist = "Eddie Vedder", number = 10 }, "invalid")
-
--- If you only want unvalidated fields, you can call
-local valid, fields, errors = group({ artist = "Eddie Vedder", number = 10 }, "unvalidated")
-
--- You may also use any of the combinations
-local valid, fields, errors = group({
-    artist = "Eddie Vedder",
-    number = 10
-}, "valid", "unvalidated")
 
 -- You can even call fields to get simple name, value table
 -- (in that case all the `nil`s are removed as well)
@@ -78,7 +59,7 @@ local data = fields("all")
 local data = fields("valid", "invalid")
 
 -- This doesn't stop here. You may also want to get only some fields by their name.
--- You can do that by calling
+-- You can do that by calling (returns a table):
 local data = data{ "artist" }
 ```
 
@@ -245,6 +226,8 @@ local ok, value = validation:ifbetween(1, 10,
     "Yes, the number is between 1 and 10",
     "No, the number is not between 1 and 10")(100)
 ```
+
+#### Group Validators
 
 
 So the last 2 arguments to conditional validation factory validators are the `truthy` and `falsy` values.
