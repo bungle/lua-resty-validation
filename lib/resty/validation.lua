@@ -341,6 +341,35 @@ function factory.coalesce(...)
         return true
     end
 end
+function factory.email()
+    return function(value)
+        if value == nil or type(value) ~= "string" then return false end
+        local i, at = find(value, "@", 1, true), nil
+        while i do
+            at = i
+            i = find(value, "@", i + 1)
+        end
+        if not at or at > 65 then return false end
+        local lp = sub(value, 1, at - 1)
+        if not lp then return false end
+        local dp = sub(value, at + 1)
+        if not dp or #dp > 254 then return false end
+        local qp = find(lp, '"', 1, true)
+        if qp and qp > 1 then return false end
+        local q
+        for i = 1, #lp do
+            local c = sub(lp, i, i)
+            if c == "@" then
+                if not q then return false end
+            elseif c == '"' then
+                q = not q
+            end
+        end
+        if find(lp, "..", 1, true) or find(dp, "..", 1, true) then return false end
+        if match(lp, "^%s+") or match(dp, "%s+$") then return false end
+        return match(value, "%w*%p*%@+%w*%.?%w*") ~= nil
+    end
+end
 factory.__index = factory
 local validators = setmetatable({
     ["nil"]      = factory.null(),
@@ -373,7 +402,8 @@ local validators = setmetatable({
     trim         = factory.trim(),
     ltrim        = factory.ltrim(),
     rtrim        = factory.rtrim(),
-    reverse      = factory.reverse()
+    reverse      = factory.reverse(),
+    email        = factory.email()
 }, factory)
 local data = {}
 function data:__call(...)
