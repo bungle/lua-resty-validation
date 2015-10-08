@@ -13,8 +13,7 @@ local upper = string.upper
 local find = string.find
 local gsub = string.gsub
 local sub = string.sub
-local len = string.len
-local reverse = string.reverse
+local len = utf8 and utf8.len or function(s) return select(2, gsub(s, '[^\x80-\xC1]', '')) end
 local iotype = io.type
 local mathtype = math.type
 local tointeger = math.tointeger
@@ -22,8 +21,9 @@ local abs = math.abs
 local unpack = unpack or table.unpack
 local nothing = {}
 local inf = 1 / 0
-if utf8 and utf8.len then
-    len = utf8.len
+local sreverse = string.reverse
+local function reverse(s)
+    return sreverse(gsub(s, "[%z-\x7F\xC2-\xF4][\x80-\xBF]*", function(c) return #c > 1 and sreverse(c) end))
 end
 if not mathtype then
     mathtype = function(value)

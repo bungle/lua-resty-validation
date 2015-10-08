@@ -16,7 +16,7 @@ dependencies = {
 build = {
     type = "builtin",
     modules = {
-        ["resty.validation"]                = "lib/resty/validation.lua",
-        ["resty.validation.ngx"]            = "lib/resty/validation/ngx.lua"
+        ["resty.validation"]     = "lib/resty/validation.lua",
+        ["resty.validation.ngx"] = "lib/resty/validation/ngx.lua"
     }
 }

@@ -182,9 +182,9 @@ Validation factory consist of different validators and filters used to validate 
 * `outside(min[, max = min])`, validates that the value is not between `min` and `max`
 * `divisible(number)`, validates that the value is divisible with `number`
 * `indivisible(number)`, validates that the value is not divisible with `number`
-* `len(min[, max = min])`, validates that the length (`#` or `string.len` or `utf8.len` (if available)) of the value is exactly `min` or between `min` and `max`
-* `minlen(min)`, validates that the length of the value is at least `min`
-* `maxlen(max)`, validates that the length of the value is at most `max`
+* `len(min[, max = min])`, validates that the length of the value is exactly `min` or between `min` and `max`  (UTF-8)
+* `minlen(min)`, validates that the length of the value is at least `min` (UTF-8)
+* `maxlen(max)`, validates that the length of the value is at most `max`  (UTF-8)
 * `equals(equal)` or `equal(equal)`, validates that the value is exactly something
 * `unequals(equal)` or `unequal(equal)`, validates that the value is not exactly something
 * `oneof(...)`, validates that the value is equal to one of the supplied arguments
@@ -196,14 +196,14 @@ Validation factory consist of different validators and filters used to validate 
 * `tointeger()`, converts value to integer
 * `toboolean()`, converts value to boolean (using `not not value`)
 * `tonil()` or `tonull()`, converts value to nil
-* `lower()`, converts value to lower case
-* `upper()`, converts value to upper case
+* `lower()`, converts value to lower case (UTF-8 support is not yet implemented)
+* `upper()`, converts value to upper case (UTF-8 support is not yet implemented)
 * `trim([pattern])`, trims whitespace (you may use pattern as well) from the left and the right
 * `ltrim([pattern])`, trims whitespace (you may use pattern as well) from the left
 * `rtrim([pattern])`, trims whitespace (you may use pattern as well) from the right
 * `starts(starts)`, checks if string starts with `starts`
 * `ends(ends)`, checks if string ends with `ends`
-* `reverse`, reverses the value (string or number)
+* `reverse`, reverses the value (string or number) (UTF-8)
 * `coalesce(...)`, if the value is nil, returns first non-nil value passed as arguments
 * `email()`, validates that the value is email address
 
