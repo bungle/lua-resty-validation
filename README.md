@@ -252,9 +252,7 @@ local group = validation.new{
     password1 = ispassword,
     password2 = ispassword
 }
-
 group:compare "password1 == password2"
-
 local valid, fields, errors = group{ password1 = "qwerty123", password2 = "qwerty123" }
 ```
 
