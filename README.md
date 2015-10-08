@@ -38,24 +38,32 @@ local valid, fields, errors = group{ artist = "Eddie Vedder", number = "10" }
 if valid then
   print("all the group fields are valid")
 else
-  print(fields.artist.name,  fields.artist.valid, fields.artist.input,
-        fields.artist.value, fields.artist.error, fields.artist.invalid)
-  print(fields.number.name,  fields.number.valid, fields.number.input,
-        fields.number.value, fields.number.error, fields.number.invalid)
+  print(fields.artist.name,      fields.artist.error,
+        fields.artist.valid,     fields.artist.invalid,
+        fields.artist.input,     fields.artist.value, ,
+        fields.artist.validated, fields.artist.unvalidated)
 end
 
 -- You can even call fields to get simple name, value table
 -- (in that case all the `nil`s are removed as well)
 
--- By default this returns only the valid fields' names and values
+-- By default this returns only the valid fields' names and values:
 local data = fields()
 local data = fields("valid")
 
--- To get only the invalid fields' names and values call
+-- To get only the invalid fields' names and values call:
 local data = fields("invalid")
 
--- To get both call
+-- To get only the validated fields' names and values call (whether or not they are valid):
+local data = fields("validated")
+
+-- To get only the unvalidated fields' names and values call (whether or not they are valid):
+local data = fields("unvalidated")
+
+-- To get all, call:
 local data = fields("all")
+
+-- Or combine:
 local data = fields("valid", "invalid")
 
 -- This doesn't stop here. You may also want to get only some fields by their name.
@@ -229,20 +237,35 @@ local ok, value = validation:ifbetween(1, 10,
     "No, the number is not between 1 and 10")(100)
 ```
 
-#### Group Validators
-
-
-So the last 2 arguments to conditional validation factory validators are the `truthy` and `falsy` values.
+The last 2 arguments to conditional validation factory validators are the `truthy` and `falsy` values.
 Every other argument is passed to the actual validation factory validator.
 
-#### Examples
+### Group Validators
+
+`lua-resty-validation` currently supports one predefined validator, and that is:
+
+* `compare(comparison)`, compares two fields and sets fields invalid or valid according to comparision:
 
 ```lua
-local validation = require "resty.validation"
-local ok, e = validation.string.trim:len(8)("my value")
-local ok, e = validation.number:between(1, 100):outside(40, 50)(90)
-local ok, e = validation:equal(10)(10)
+local ispassword = validation.trim:minlen(8)
+local group = validation.new{
+    password1 = ispassword,
+    password2 = ispassword
+}
+
+group:compare "password1 == password2"
+
+local valid, fields, errors = group{ password1 = "qwerty123", password2 = "qwerty123" }
 ```
+
+You can use normal Lua relational operators in `compare` group validator:
+
+* `<`
+* `>`
+* `<=`
+* `>=`
+* `==`
+* `~=`
 
 ## License
 
