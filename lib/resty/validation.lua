@@ -374,7 +374,7 @@ function factory.email()
         end
         if q or find(lp, "..", 1, true) or find(dp, "..", 1, true) then return false end
         if match(lp, "^%s+") or match(dp, "%s+$") then return false end
-        return match(value, "%w*%p*%@+%w*%.?%w*") ~= nil
+        return match(value, "%w*%p*@+%w*%.?%w*") ~= nil
     end
 end
 factory.__index = factory
@@ -466,9 +466,37 @@ function fields:__call(...)
     return data
 end
 local field = {}
+field.__index = field
+function field.new(opts)
+    local self = setmetatable({
+        valid = true,
+        invalid = false,
+        validated = true,
+        unvalidated = false
+    }, field)
+    if type(opts) == "table" then
+        self.name = opts.name
+        self.value = opts.value or opts.input
+        self.input = opts.input or opts.value
+        if opts.valid == false or opts.invalid then
+            self:invalidate(opts.error or "unknown")
+        elseif opts.validated == false or opts.unvalidated then
+            self.validated = false
+            self.unvalidated = true
+        end
+    end
+    return self
+end
 function field:__tostring()
-    if type(self.value == "string") then return self.value end
+    if type(self.value) == "string" then return self.value end
     return tostring(self.value)
+end
+function field:invalidate(error)
+    self.error = error
+    self.valid = false
+    self.invalid = true
+    self.validated = true
+    self.unvalidated = false
 end
 local irules = {}
 local grules = {}
@@ -492,34 +520,14 @@ function group:compare(comparison)
     local f2 = (gsub(sub(comparison,    e + 1), "%s+$", ""):gsub("^%s+", ""))
     self:add(function(fields)
         if not fields[f1] then
-            fields[f1] = setmetatable({
-                name = f1,
-                valid = true,
-                invalid = false,
-                validated = true,
-                unvalidated = false
-            }, field)
+            fields[f1] = field.new{ name = f1 }
         end
         if not fields[f2] then
-            fields[f2] = setmetatable({
-                name = f2,
-                valid = true,
-                invalid = false,
-                validated = true,
-                unvalidated = false
-            }, field)
+            fields[f2] = field.new{ name = f2 }
         end
         local v1 = fields[f1]
         local v2 = fields[f2]
         if v1.valid and v2.valid then
-            if v1.unvalidated then
-                v1.validated = true
-                v1.unvalidated = false
-            end
-            if v2.unvalidated then
-                v2.validated = true
-                v2.unvalidated = false
-            end
             local valid, x, y = true, v1.value, v2.value
             if o == "<=" then
                 valid = x <= y
@@ -535,66 +543,46 @@ function group:compare(comparison)
                 valid = x > y
             end
             if not valid then
-                v1.valid = false
-                v1.invalid = true
-                v1.error = "compare"
-                v2.valid = false
-                v2.invalid = true
-                v2.error = "compare"
+                v1:invalidate("compare")
+                v2:invalidate("compare")
             end
         end
     end)
 end
 function group:__call(t)
-    local ir, results, errors = self[irules], setmetatable({}, fields), nil
+    local ir, results = self[irules], setmetatable({}, fields)
     for _, v in ipairs(ir) do
         local name, func = v.name, v.func
-        local fld
-        if results[name] then
-            fld = results[name]
-        else
-            local input = t[name]
-            fld = setmetatable({
-                name = name,
-                input = input,
-                value = input,
-                valid = true,
-                invalid = false,
-                validated = true,
-                unvalidated = false
-            }, field)
+        if not results[name] then
+            results[name] = field.new{ name = name, value = t[name] }
         end
+        local fld = results[name]
         if fld.valid then
             local ok, value = func(fld.value)
             if ok then
                 fld.value = value
             else
-                if errors == nil then
-                    errors = {}
-                end
-                errors[name] = value
-                fld.valid = false
-                fld.invalid = true
-                fld.error = value
+                fld:invalidate(value)
             end
         end
     end
     for name, input in pairs(t) do
         if not results[name] then
-            results[name] = setmetatable({
-                name = name,
-                input = input,
-                value = input,
-                valid = true,
-                invalid = false,
-                validated = false,
-                unvalidated = true
-            }, field)
+            results[name] = field.new{ name = name, value = input, validated = false }
         end
     end
     local gr = self[grules]
     for _, func in ipairs(gr) do
         func(results)
+    end
+    local errors
+    for name, field in pairs(results) do
+        if field.invalid then
+            if not errors then
+                errors = {}
+            end
+            errors[name] = field.error or "unknown"
+        end
     end
     return errors == nil, results, errors
 end
