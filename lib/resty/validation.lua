@@ -356,16 +356,23 @@ function factory.email()
         if not dp or #dp > 254 then return false end
         local qp = find(lp, '"', 1, true)
         if qp and qp > 1 then return false end
-        local q
+        local q, p
         for i = 1, #lp do
             local c = sub(lp, i, i)
             if c == "@" then
                 if not q then return false end
             elseif c == '"' then
-                q = not q
+                if p ~= [[\]] then
+                    q = not q
+                end
+            elseif c == " " or c == '"' or c == [[\]] then
+                if not q then
+                    return false
+                end
             end
+            p = c
         end
-        if find(lp, "..", 1, true) or find(dp, "..", 1, true) then return false end
+        if q or find(lp, "..", 1, true) or find(dp, "..", 1, true) then return false end
         if match(lp, "^%s+") or match(dp, "%s+$") then return false end
         return match(value, "%w*%p*%@+%w*%.?%w*") ~= nil
     end

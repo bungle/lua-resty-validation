@@ -129,6 +129,7 @@ Other filters:
 * `ltrim`
 * `rtrim`
 * `reverse`
+* `email`
 
 #### Example
 
@@ -196,6 +197,7 @@ Validation factory consist of different validators and filters used to validate 
 * `ends(ends)`, checks if string ends with `ends`
 * `reverse`, reverses the value (string or number)
 * `coalesce(...)`, if the value is nil, returns first non-nil value passed as arguments
+* `email()`, validates that the value is email address
 
 #### Conditional Validation Factory Validators
 
