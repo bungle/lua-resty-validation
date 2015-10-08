@@ -25,6 +25,20 @@ local inf = 1 / 0
 if utf8 and utf8.len then
     len = utf8.len
 end
+if not mathtype then
+    mathtype = function(value)
+        if type(value) ~= "number" then
+            return nil
+        end
+        return value % 1 == 0 and "integer" or "float"
+    end
+end
+if not tointeger then
+    tointeger = function(value)
+        local v = tonumber(value)
+        return mathtype(value) == "integer" and v or nil
+    end
+end
 local function istype(t)
     if t == "integer" or t == "float" then
         return function(value)

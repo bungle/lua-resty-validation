@@ -111,8 +111,8 @@ validators (call them with dot `.`):
 * `userdata`
 * `func` or `["function"]` (as the function is a reserved keyword in Lua)
 * `thread`
-* `integer` (works only with Lua >= 5.3, `math.type(nbr) == 'integer'`)
-* `float` (works only with Lua >= 5.3,   `math.type(nbr) == 'float'`)
+* `integer`
+* `float`
 * `file` (`io.type(value) == 'file'`)
 
 Type conversion filters:
@@ -167,8 +167,8 @@ Validation factory consist of different validators and filters used to validate 
 * `userdata()`, check that value type is `userdata`
 * `func()` or `["function"]()`, check that value type is `function`
 * `thread()`, check that value type is `thread`
-* `integer()`, check that value type is `integer` (works only with Lua >= 5.3, `math.type(nbr) == 'integer'`)
-* `float()`, check that value type is `float` (works only with Lua >= 5.3,   `math.type(nbr) == 'float'`)
+* `integer()`, check that value type is `integer`
+* `float()`, check that value type is `float`
 * `file()`, check that value type is `file` (`io.type(value) == 'file'`)
 * `abs()`, filters value and returns absolute value (`math.abs`)
 * `inf()`, checks that the value is `inf` or `-inf`
@@ -193,7 +193,7 @@ Validation factory consist of different validators and filters used to validate 
 * `unmatch(pattern[, init])`, validates that the value does not match (`string.match`) the pattern
 * `tostring()`, converts value to string
 * `tonumber([base])`, converts value to number
-* `tointeger()`, converts value to integer (works only with Lua >= 5.3, `math.tointeger`)
+* `tointeger()`, converts value to integer
 * `toboolean()`, converts value to boolean (using `not not value`)
 * `tonil()` or `tonull()`, converts value to nil
 * `lower()`, converts value to lower case
