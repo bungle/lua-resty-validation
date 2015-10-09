@@ -22,8 +22,16 @@ local unpack = unpack or table.unpack
 local nothing = {}
 local inf = 1 / 0
 local sreverse = string.reverse
+local stopped = {}
+local operators = { "<=", ">=", "==", "~=", "<", ">" }
+local function stop(value)
+    return setmetatable({ value = value }, stopped)
+end
 local function reverse(s)
     return sreverse(gsub(s, "[%z-\x7F\xC2-\xF4][\x80-\xBF]*", function(c) return #c > 1 and sreverse(c) end))
+end
+local function trim(s)
+    return (gsub(s, "%s+$", ""):gsub("^%s+", ""))
 end
 if not mathtype then
     mathtype = function(value)
@@ -55,6 +63,7 @@ local function istype(t)
     end
 end
 local factory = {}
+factory.__index = factory
 function factory.type(t)
     return istype(t)
 end
@@ -400,7 +409,14 @@ function factory.email()
         return match(value, "%w*%p*@+%w*%.?%w*") ~= nil
     end
 end
-factory.__index = factory
+function factory.optional(default)
+    return function(value)
+        if value == nil or value == "" then
+            return stop, default == nil and value or default
+        end
+        return true, value
+    end
+end
 local validators = setmetatable({
     ["nil"]      = factory.null(),
     null         = factory.null(),
@@ -433,7 +449,8 @@ local validators = setmetatable({
     ltrim        = factory.ltrim(),
     rtrim        = factory.rtrim(),
     reverse      = factory.reverse(),
-    email        = factory.email()
+    email        = factory.email(),
+    optional     = factory.optional()
 }, factory)
 local data = {}
 function data:__call(...)
@@ -491,21 +508,18 @@ end
 local field = {}
 field.__index = field
 function field.new(opts)
-    local self = setmetatable({
-        valid = true,
-        invalid = false,
-        validated = true,
-        unvalidated = false
-    }, field)
+    local self = setmetatable({}, field)
     if type(opts) == "table" then
         self.name = opts.name
-        self.value = opts.value or opts.input
-        self.input = opts.input or opts.value
-        if opts.valid == false or opts.invalid then
-            self:invalidate(opts.error or "unknown")
-        elseif opts.validated == false or opts.unvalidated then
-            self.validated = false
-            self.unvalidated = true
+        self.input = opts.input
+        if opts.value then
+            self:accept(opts.value)
+        elseif opts.error then
+            self:reject(opts.error)
+        elseif opts.input then
+            self:init(opts.input)
+        else
+            self:accept(nil)
         end
     end
     return self
@@ -514,22 +528,30 @@ function field:__tostring()
     if type(self.value) == "string" then return self.value end
     return tostring(self.value)
 end
-function field:invalidate(error)
+function field:init(input)
+    self.value = input
+    self.valid = true
+    self.invalid = false
+    self.validated = false
+    self.unvalidated = true
+end
+function field:reject(error)
     self.error = error
     self.valid = false
     self.invalid = true
     self.validated = true
     self.unvalidated = false
 end
-local irules = {}
-local grules = {}
-local operators = { "<=", ">=", "==", "~=", "<", ">" }
+function field:accept(value)
+    self.error = nil
+    self.value = value
+    self.valid = true
+    self.invalid = false
+    self.validated = true
+    self.unvalidated = false
+end
 local group = {}
 group.__index = group
-function group:add(func)
-    local gr = self[grules]
-    gr[#gr+1] = func
-end
 function group:compare(comparison)
     local s, e, o
     for _, operator in ipairs(operators) do
@@ -539,9 +561,9 @@ function group:compare(comparison)
             break
         end
     end
-    local f1 = (gsub(sub(comparison, 1, s - 1), "%s+$", ""):gsub("^%s+", ""))
-    local f2 = (gsub(sub(comparison,    e + 1), "%s+$", ""):gsub("^%s+", ""))
-    self:add(function(fields)
+    local f1 = trim(sub(comparison, 1, s - 1))
+    local f2 = trim(sub(comparison,    e + 1))
+    self[#self+1] = function(fields)
         if not fields[f1] then
             fields[f1] = field.new{ name = f1 }
         end
@@ -565,38 +587,34 @@ function group:compare(comparison)
             elseif o == ">" then
                 valid = x > y
             end
-            if not valid then
-                v1:invalidate("compare")
-                v2:invalidate("compare")
-            end
-        end
-    end)
-end
-function group:__call(t)
-    local ir, results = self[irules], setmetatable({}, fields)
-    for _, v in ipairs(ir) do
-        local name, func = v.name, v.func
-        if not results[name] then
-            results[name] = field.new{ name = name, value = t[name] }
-        end
-        local fld = results[name]
-        if fld.valid then
-            local ok, value = func(fld.value)
-            if ok then
-                fld.value = value
+            print("validating", x, o, y)
+            if valid then
+                v1:accept(x)
+                v2:accept(y)
             else
-                fld:invalidate(value)
+                v1:reject("compare")
+                v2:reject("compare")
             end
         end
     end
-    for name, input in pairs(t) do
-        if not results[name] then
-            results[name] = field.new{ name = name, value = input, validated = false }
+end
+function group:__call(data)
+    local results = setmetatable({}, fields)
+    local validators = self.validators
+    for name, input in pairs(data) do
+        if validators[name] then
+            local valid, value = validators[name](input)
+            if valid then
+                results[name] = field.new{ name = name, input = input, value = value }
+            else
+                results[name] = field.new{ name = name, input = input, error = value }
+            end
+        else
+            results[name] = field.new{ name = name, input = input, validated = false }
         end
     end
-    local gr = self[grules]
-    for _, func in ipairs(gr) do
-        func(results)
+    for _, v in ipairs(self) do
+        v(results)
     end
     local errors
     for name, field in pairs(results) do
@@ -609,40 +627,38 @@ function group:__call(t)
     end
     return errors == nil, results, errors
 end
-function new(rules)
-    local self = setmetatable({ [irules] = {}, [grules] = {} }, group)
-    if rules then
-        local ir = self[irules]
-        for index, func in pairs(rules) do
-            if type(index) == "table" then
-                for _, name in ipairs(index) do
-                    ir[#ir+1] = { name = name, func = func }
-                end
-            else
-                ir[#ir+1] = { name = index, func = func }
-            end
-        end
-    end
+function new(validators)
+    local self = setmetatable({ validators = validators }, group)
     return self
 end
+local function check(index, value, valid, v)
+    if not valid then
+        error(index, 0)
+    elseif valid == stop then
+        error(stop(value), 0)
+    elseif getmetatable(valid) == stopped then
+        error(valid, 0)
+    elseif v == stop then
+        error(stop(value), 0)
+    elseif getmetatable(v) == stopped then
+        error(v, 0)
+    elseif v == nothing then
+        v = nil
+    elseif v == nil then
+        v = value
+    end
+    return true, v
+end
 local function validation(func, parent_f, parent, method)
-    return setmetatable({ new = new, group = group, nothing = nothing, validators = validators }, {
+    return setmetatable({ new = new, group = group, nothing = nothing, stop = stop, validators = validators }, {
         __index = function(self, index)
             return validation(function(...)
-                local valid, value = func(...)
-                if not valid then error(index, 0) end
+                local valid, value = check(index, select(1, ...), func(...))
                 local validator = rawget(validators, index)
                 if not validator then
                     error(index, 0)
                 end
-                local valid, v = validator(value)
-                if not valid then error(index, 0) end
-                if v == nothing then
-                    v = nil
-                elseif v == nil then
-                    v = value
-                end
-                return true, v
+                return check(index, value, validator(value))
             end, func, self, index)
         end,
         __call = function(_, self, ...)
@@ -650,35 +666,28 @@ local function validation(func, parent_f, parent, method)
                 local n = select("#", ...)
                 local args = { ... }
                 return validation(function(...)
-                    local v
-                    local valid, value = parent_f(...)
-                    if not valid then error(method, 0) end
+                    local valid, value = check(method, select(1, ...), parent_f(...))
                     if sub(method, 1, 2) == "if" then
                         local validator = rawget(getmetatable(validators), sub(method, 3))
                         if not validator then error(method, 0) end
+                        local v
                         if n > 2 then
                             valid, v = validator(unpack(args, 1, n - 2))(value)
                         else
                             valid, v = validator()(value)
                         end
-                        valid, v = true, valid and args[n - 1] or args[n]
-                    else
-                        local validator = rawget(getmetatable(validators), method)
-                        if not validator then error(method, 0) end
-                        valid, v = validator(unpack(args, 1, n))(value)
-                        if v == nothing then
-                            v = nil
-                        elseif v == nil then
-                            v = value
-                        end
+                        return check(method, value, true, valid and args[n - 1] or args[n])
                     end
-                    if not valid then error(method, 0) end
-                    return true, v
+                    local validator = rawget(getmetatable(validators), method)
+                    if not validator then error(method, 0) end
+                    return check(method, value, validator(unpack(args, 1, n))(value))
                 end)
             end
             local ok, error, value = pcall(func, self, ...)
             if ok then
                 return true, value
+            elseif getmetatable(error) == stopped then
+                return true, error.value
             end
             return false, error
         end

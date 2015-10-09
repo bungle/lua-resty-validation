@@ -57,11 +57,11 @@ validators.crc32short  = factory.crc32short()
 validators.crc32long   = factory.crc32long()
 validators.crc32       = factory.crc32()
 return {
-    escapeuri   = factory.escapeuri,
-    unescapeuri = factory.unescapeuri,
-    base64enc   = factory.base64enc,
-    base64dec   = factory.base64dec,
-    crc32short  = factory.crc32short,
-    crc32long   = factory.crc32long,
-    crc32       = factory.crc32
+    escapeuri   = validators.escapeuri,
+    unescapeuri = validators.unescapeuri,
+    base64enc   = validators.base64enc,
+    base64dec   = validators.base64dec,
+    crc32short  = validators.crc32short,
+    crc32long   = validators.crc32long,
+    crc32       = validators.crc32
 }

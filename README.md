@@ -138,6 +138,7 @@ Other filters:
 * `rtrim`
 * `reverse`
 * `email`
+* `optional`
 
 #### Example
 
@@ -206,6 +207,7 @@ Validation factory consist of different validators and filters used to validate 
 * `reverse`, reverses the value (string or number) (UTF-8)
 * `coalesce(...)`, if the value is nil, returns first non-nil value passed as arguments
 * `email()`, validates that the value is email address
+* `optional([default])`, stops validation if the value is empty string `""` or `nil` and returns `true, default or value`
 
 #### Conditional Validation Factory Validators
 
@@ -244,7 +246,7 @@ Every other argument is passed to the actual validation factory validator.
 
 `lua-resty-validation` currently supports one predefined validator, and that is:
 
-* `compare(comparison)`, compares two fields and sets fields invalid or valid according to comparision:
+* `compare(comparison)`, compares two fields and sets fields invalid or valid according to comparison:
 
 ```lua
 local ispassword = validation.trim:minlen(8)
