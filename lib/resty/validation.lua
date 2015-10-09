@@ -235,10 +235,11 @@ function factory.unequals(unequal)
 end
 factory.unequal = factory.unequals
 function factory.oneof(...)
+    local n = select("#", ...)
     local args = { ... }
     return function(value)
-        for _, v in ipairs(args) do
-            if v == value then
+        for i = 1, n do
+            if value == args[i] then
                 return true
             end
         end
@@ -246,10 +247,11 @@ function factory.oneof(...)
     end
 end
 function factory.noneof(...)
+    local n = select("#", ...)
     local args = { ... }
     return function(value)
-        for _, v in ipairs(args) do
-            if v == value then
+        for i = 1, n do
+            if value == args[i] then
                 return false
             end
         end
