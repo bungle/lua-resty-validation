@@ -207,7 +207,7 @@ Validation factory consist of different validators and filters used to validate 
 * `reverse`, reverses the value (string or number) (UTF-8)
 * `coalesce(...)`, if the value is nil, returns first non-nil value passed as arguments
 * `email()`, validates that the value is email address
-* `optional([default])`, stops validation if the value is empty string `""` or `nil` and returns `true, default or value`
+* `optional([default])`, stops validation if the value is empty string `""` or `nil` and returns `true`, and either, `default` or `value`
 
 #### Conditional Validation Factory Validators
 
