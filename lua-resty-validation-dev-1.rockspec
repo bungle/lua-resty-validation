@@ -17,6 +17,7 @@ build = {
     type = "builtin",
     modules = {
         ["resty.validation"]     = "lib/resty/validation.lua",
+        ["resty.validation.tz"] = "lib/resty/validation/tz.lua",
         ["resty.validation.ngx"] = "lib/resty/validation/ngx.lua"
     }
 }
