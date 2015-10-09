@@ -183,7 +183,7 @@ function factory.len(min, max)
     end
     return function(value)
         local t = type(value)
-        if t ~= "string" or t ~= "table" then return false end
+        if t ~= "string" and t ~= "table" then return false end
         if type(min) ~= "number" or type(max) ~= "number" or type(value) == "nil" then return false end
         local l
         if t == "string" then l = len(value) else l = #value end
@@ -194,7 +194,7 @@ end
 function factory.minlen(min)
     return function(value)
         local t = type(value)
-        if t ~= "string" or t ~= "table" then return false end
+        if t ~= "string" and t ~= "table" then return false end
         if type(min) ~= "number" or type(value) == "nil" then return false end
         local l
         if t == "string" then l = len(value) else l = #value end
@@ -205,7 +205,7 @@ end
 function factory.maxlen(max)
     return function(value)
         local t = type(value)
-        if t ~= "string" or t ~= "table" then return false end
+        if t ~= "string" and t ~= "table" then return false end
         if type(max) ~= "number" then return false end
         local l
         if t == "string" then l = len(value) else l = #value end
