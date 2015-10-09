@@ -412,7 +412,7 @@ end
 function factory.optional(default)
     return function(value)
         if value == nil or value == "" then
-            return stop, default == nil and value or default
+            return stop, default ~= nil and default or value
         end
         return true, value
     end

@@ -267,6 +267,24 @@ You can use normal Lua relational operators in `compare` group validator:
 * `==`
 * `~=`
 
+### Stop Validators
+
+Stop validators, like `optional`, are just like a normal validators, but instead of returning
+`true` or `false` as a validation result OR as a filtered value, you can return `validation.stop`.
+This value can also be used inside conditional validators and in validators that support default values. Here is how
+the `optional` validator is implemented:
+
+```lua
+function factory.optional(default)
+    return function(value)
+        if value == nil or value == "" then
+            return validation.stop, default ~= nil and default or value
+        end
+        return true, value
+    end
+end
+```
+
 ## License
 
 `lua-resty-validation` uses two clause BSD license.
