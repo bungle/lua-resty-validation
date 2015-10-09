@@ -285,6 +285,13 @@ function factory.optional(default)
 end
 ```
 
+These are roughly equivalent to this:
+
+```lua
+local opt = validation:optional("default")(nil)
+local opt = validation:ifoneof("", nil, validation.stop("default"), nil)(nil)
+```
+
 ## License
 
 `lua-resty-validation` uses two clause BSD license.
