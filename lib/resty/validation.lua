@@ -637,7 +637,12 @@ local function check(index, value, valid, v)
     if not valid then
         error(index, 0)
     elseif valid == stop then
-        error(stop(value), 0)
+        if v == nothing then
+            v = nil
+        elseif v == nil then
+            v = value
+        end
+        error(stop(v), 0)
     elseif getmetatable(valid) == stopped then
         error(valid, 0)
     elseif v == stop then
