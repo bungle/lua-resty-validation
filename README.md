@@ -285,7 +285,7 @@ function factory.optional(default)
 end
 ```
 
-These are roughly equivalent to this:
+These are roughly equivalent:
 
 ```lua
 local opt = validation:optional("default")(nil)
