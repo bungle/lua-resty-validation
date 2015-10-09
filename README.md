@@ -79,8 +79,6 @@ location would be `/usr/local/openresty/lualib/resty`.
 
 ### Using LuaRocks
 
-If you are using LuaRocks >= 2.2:
-
 ```Shell
 $ luarocks install lua-resty-validation
 ```
