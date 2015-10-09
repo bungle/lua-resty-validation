@@ -289,8 +289,8 @@ These are roughly equivalent:
 
 ```lua
 -- Both return: true, "default" (they stop prosessing :minlen(10) on nil and "" inputs
-local valid, value = validation:optional("default"):minlen(10)(nil)
-local valid, value = validation:ifoneof("", nil, validation.stop("default"), nil):minlen(10)(nil)
+local ok, val = validation:optional("default"):minlen(10)(nil)
+local ok, val = validation:ifoneof("", nil, validation.stop("default"), nil):minlen(10)(nil)
 ```
 
 ## License
