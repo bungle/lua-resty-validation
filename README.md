@@ -333,8 +333,8 @@ It will monkey patch the adapters that it will provide in `resty.validation`, an
 #### Example
 
 ```lua
-local validation = require "resty.validation"
 require "resty.validation.ngx"
+local validation = require "resty.validation"
 local valid, value = validation.unescapeuri.crc32("https://github.com/")
 local valid, value = validation:unescapeuri():crc32()("https://github.com/")
 ```
@@ -363,8 +363,8 @@ as a lua number.
 #### Example
 
 ```lua
-local validation = require "resty.validation"
 require "resty.validation.tz"
+local validation = require "resty.validation"
 local valid, ts = validation.totimestamp("1990-12-31T23:59:60Z")
 local valid, ts = validation.totimestamp("1996-12-19")
 ```
