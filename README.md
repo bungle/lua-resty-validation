@@ -285,6 +285,77 @@ local ok, val = validation:optional(input):minlen(10)(input)
 local ok, val = validation:ifoneof("", nil, validation.stop(input), input):minlen(10)(input)
 ```
 
+### Built-in Validator Extensions
+
+Currently `lua-resty-validation` has support for two extensions or plugins that you can enable:
+
+* `resty.validation.ngx`
+* `resty.validation.tz`
+
+These are something you can look at if you want to build your own validator extension. If you do
+so, and think that it would be usable for others as well, mind you to send your extension as a pull-request
+for inclusion in this project, thank you very much, ;-).
+
+#### resty.validation.ngx extension
+
+As the name tells, this set of validator extensions requires OpenResty (or Lua Nginx module at least).
+To use this extension all you need to do is:
+
+```lua
+require "resty.validation.ngx"
+```
+
+It will monkey patch the adapters that it will provide in `resty.validation`, and those are currently:
+
+* escapeuri
+* unescapeuri
+* base64enc
+* base64dec
+* crc32short
+* crc32long
+* crc32
+
+(there is both factory and argument-less version of these)
+
+#### Example
+
+```lua
+local validation = require "resty.validation"
+require "resty.validation.ngx"
+local valid, value = validation.unescapeuri.crc32("https://github.com/")
+local valid, value = validation:unescapeuri():crc32()("https://github.com/")
+```
+
+#### resty.validation.tz extension
+
+This set of validators and filters is based on the great [`luatz`](https://github.com/daurnimator/luatz)
+library by @daurnimator, that is a library for time and date manipulation. To use this extension, all you need
+to do is:
+
+```lua
+require "resty.validation.tz"
+```
+
+It will monkey patch the adapters that it will provide in `resty.validation`, and those are currently:
+
+* totimetable
+* totimestamp
+
+(there is both factory and argument-less version of these)
+
+`totimestamp` and `totimetable` filters work great with HTML5 date and datetime input fields. As the name
+tells, `totimetable` returns luatz `timetable` and `totimestamp` returns seconds since unix epoch (1970-01-01)
+as a lua number.
+
+#### Example
+
+```lua
+local validation = require "resty.validation"
+require "resty.validation.tz"
+local valid, ts = validation.totimestamp("1990-12-31T23:59:60Z")
+local valid, ts = validation.totimestamp("1996-12-19")
+```
+
 ## License
 
 `lua-resty-validation` uses two clause BSD license.
