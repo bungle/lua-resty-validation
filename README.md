@@ -402,7 +402,7 @@ local valid, value = myvalidator(" \n\t a \t\n ")
 local valid, value = myvalidator(" \n\t abcde \t\n ")
 ```
 
-Whenever the validator fails and return false, you should not use the returned value for other purposes than
+Whenever the validator fails and returns `false`, you should not use the returned value for other purposes than
 error reporting. So, the chain works like that. The `lua-resty-validation` will not try to do anything if you
 specify chains that will never get used, such as:
 
