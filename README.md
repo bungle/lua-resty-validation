@@ -308,7 +308,7 @@ require "resty.validation.ngx"
 It will monkey patch the adapters that it will provide in `resty.validation`, and those are currently:
 
 * `escapeuri`
-* `unescapeuri`
+* `unescapeuri
 * `base64enc`
 * `base64dec`
 * `crc32short`
@@ -344,7 +344,7 @@ It will monkey patch the adapters that it will provide in `resty.validation`, an
 (there is both factory and argument-less version of these)
 
 `totimestamp` and `totimetable` filters work great with HTML5 date and datetime input fields. As the name
-tells, `totimetable` returns luatz `timetable` and `totimestamp` returns seconds since unix epoch (1970-01-01)
+tells, `totimetable` returns luatz `timetable` and `totimestamp` returns seconds since unix epoch (`1970-01-01´)
 as a lua number.
 
 #### Example
