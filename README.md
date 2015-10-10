@@ -285,6 +285,19 @@ local ok, val = validation:optional(input):minlen(10)(input)
 local ok, val = validation:ifoneof("", nil, validation.stop(input), input):minlen(10)(input)
 ```
 
+### Filtering Value and Setting the Value to `nil`
+
+Most of the validators, that are not filtering the value, only return `true` or `false´ as a result.
+That means that there is now no way to signal `resty.validation` to actually set the value to `nil`.
+So there is a work-around, you can return `validation.nothing` as a value, and that will change the
+value to `nil`, e.g. the built-in tonil validator is actually implemented like this (pseudo):
+
+```lua
+function()
+    return true, validation.nothing
+end
+```
+
 ### Built-in Validator Extensions
 
 Currently `lua-resty-validation` has support for two extensions or plugins that you can enable:
