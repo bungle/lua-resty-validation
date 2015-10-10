@@ -281,6 +281,7 @@ These are roughly equivalent:
 ```lua
 -- Both return: true, "default" (they stop prosessing :minlen(10) on nil and "" inputs
 local input = ""
+local ok, val = validation.optional:minlen(10)(input)
 local ok, val = validation:optional(input):minlen(10)(input)
 local ok, val = validation:ifoneof("", nil, validation.stop(input), input):minlen(10)(input)
 ```
