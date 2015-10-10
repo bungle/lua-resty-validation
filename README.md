@@ -449,6 +449,75 @@ end
 
 This quickly gets a little bit dirty, and that's why we have Group validators.
 
+### table valdation.new([table of validators])
+
+This function is where the group validation kicks in. No say that you have a registration
+form that asks you nick, email (same twice), and password (same twice).
+
+We will reuse the single validators, defined in `validators` module:
+
+```lua
+local v = require "resty.validation"
+return {
+    nick     = v.string.trim:minlen(2),
+    email    = v.string.trim.email,
+    password = v.string.trim:minlen(8)
+}
+```
+
+Now, lets create the reusable group validator in `forms` module:
+
+```lua
+local v        = require "resty.validation"
+local validate = require "validators"
+
+-- First we create single validators for each form field
+local register = v.new{
+    nick      = validate.nick,
+    email     = validate.email,
+    email2    = validate.email,
+    password  = validate.password,
+    password2 = validate.password
+}
+
+-- Next we create group validators for email and password:
+register:compare "email    == email2"
+register:compare "password == password2"
+
+-- And finally we return from this forms module
+
+return {
+    register = register
+}
+
+```
+
+Now, somewhere in your application you have this `register` function:
+
+
+```lua
+local forms = require "forms"
+local function register(data)
+    local valid, fields, errors = forms.register(data)
+    if valid then
+        -- input is valid, do something with fields
+    else
+        -- input is invalid, do something with fields and errors
+    end
+end
+
+-- And you might call it like:
+
+register{
+    nick = "test",
+    email = "test@test.org",
+    email2 = "test@test.org",
+    password = "qwerty123",
+    password2 = "qwerty123"
+}
+
+```
+
 ## License
 
 `lua-resty-validation` uses two clause BSD license.
