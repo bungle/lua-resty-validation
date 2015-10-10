@@ -330,7 +330,7 @@ It will monkey patch the adapters that it will provide in `resty.validation`, an
 
 (there is both factory and argument-less version of these)
 
-#### Example
+##### Example
 
 ```lua
 require "resty.validation.ngx"
@@ -360,7 +360,7 @@ It will monkey patch the adapters that it will provide in `resty.validation`, an
 tells, `totimetable` returns luatz `timetable` and `totimestamp` returns seconds since unix epoch (`1970-01-01`)
 as a lua number.
 
-#### Example
+##### Example
 
 ```lua
 require "resty.validation.tz"
