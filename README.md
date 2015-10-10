@@ -307,13 +307,13 @@ require "resty.validation.ngx"
 
 It will monkey patch the adapters that it will provide in `resty.validation`, and those are currently:
 
-* escapeuri
-* unescapeuri
-* base64enc
-* base64dec
-* crc32short
-* crc32long
-* crc32
+* `escapeuri`
+* `unescapeuri`
+* `base64enc`
+* `base64dec`
+* `crc32short`
+* `crc32long`
+* `crc32`
 
 (there is both factory and argument-less version of these)
 
@@ -338,8 +338,8 @@ require "resty.validation.tz"
 
 It will monkey patch the adapters that it will provide in `resty.validation`, and those are currently:
 
-* totimetable
-* totimestamp
+* `totimetable`
+* `totimestamp`
 
 (there is both factory and argument-less version of these)
 
