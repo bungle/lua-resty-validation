@@ -525,15 +525,6 @@ variable will look like this (`valid` would be true:, and `errors` would be `nil
 
 ```lua
 {
-    email2 = {
-        unvalidated = false,
-        value = "test@test.org",
-        input = "test@test.org",
-        name = "email2",
-        valid = true,
-        invalid = false,
-        validated = true
-    },
     nick = {
         unvalidated = false,
         value = "test",
@@ -552,11 +543,11 @@ variable will look like this (`valid` would be true:, and `errors` would be `nil
         invalid = false,
         validated = true
     },
-    password2 = {
+    email2 = {
         unvalidated = false,
-        value = "qwerty123",
-        input = "qwerty123",
-        name = "password2",
+        value = "test@test.org",
+        input = "test@test.org",
+        name = "email2",
         valid = true,
         invalid = false,
         validated = true
@@ -566,6 +557,15 @@ variable will look like this (`valid` would be true:, and `errors` would be `nil
         value = "qwerty123",
         input = "qwerty123",
         name = "password",
+        valid = true,
+        invalid = false,
+        validated = true
+    },
+    password2 = {
+        unvalidated = false,
+        value = "qwerty123",
+        input = "qwerty123",
+        name = "password2",
         valid = true,
         invalid = false,
         validated = true
