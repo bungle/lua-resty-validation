@@ -431,7 +431,7 @@ return {
 }
 ```
 
-And now you have "register" function somewhere in your application:
+And now you have `register` function somewhere in your application:
 
 ```lua
 local validate = require "validators"
