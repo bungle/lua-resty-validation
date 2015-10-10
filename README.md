@@ -359,7 +359,7 @@ It will monkey patch the adapters that it will provide in `resty.validation`, an
 
 `totimestamp` and `totimetable` filters work great with HTML5 date and datetime input fields. As the name
 tells, `totimetable` returns luatz `timetable` and `totimestamp` returns seconds since unix epoch (`1970-01-01`)
-as a lua number.
+as a Lua number.
 
 ##### Example
 
