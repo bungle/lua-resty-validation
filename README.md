@@ -321,7 +321,7 @@ require "resty.validation.ngx"
 It will monkey patch the adapters that it will provide in `resty.validation`, and those are currently:
 
 * `escapeuri`
-* `unescapeuri
+* `unescapeuri`
 * `base64enc`
 * `base64dec`
 * `crc32short`
