@@ -633,16 +633,9 @@ function new(validators)
     local self = setmetatable({ validators = validators }, group)
     return self
 end
-local function check(index, value, valid, v)
+local function check(validator, value, valid, v)
     if not valid then
-        error(index, 0)
-    elseif valid == stop then
-        if v == nothing then
-            v = nil
-        elseif v == nil then
-            v = value
-        end
-        error(stop(v), 0)
+        error(validator, 0)
     elseif getmetatable(valid) == stopped then
         error(valid, 0)
     elseif v == stop then
@@ -653,6 +646,9 @@ local function check(index, value, valid, v)
         v = nil
     elseif v == nil then
         v = value
+    end
+    if valid == stop then
+        error(stop(v), 0)
     end
     return true, v
 end
