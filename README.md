@@ -370,6 +370,54 @@ local valid, ts = validation.totimestamp("1990-12-31T23:59:60Z")
 local valid, ts = validation.totimestamp("1996-12-19")
 ```
 
+## API
+
+I'm not going here for details for all the different validators and filters there is because they all follow the
+same logic, but I will show some general ways how this works.
+
+### boolean, value/error validation...
+
+That `...` means the validation chain. This is used to define a single validator chain. There is no limit to
+chain length. It will always return boolean (if the validation is valid or not). The second return value will
+be either the name of the filter that didn't return `true` as a validation result, or the filtered value.
+
+```lua
+local v = require "resty.validation"
+
+-- The below means, create validator that checks that the input is:
+-- 1. string
+-- If, it is, then trim whitespaces from begin and end of the string:
+-- 2. trim
+-- Then check that the trimmed string's length is at least 5 characters (UTF-8):
+-- 3. minlen(5)
+-- And if everything is still okay, convert that string to upper case
+-- (UTF-8 is not yet supported in upper):
+-- 4. upper
+local myvalidator = v.string.trim:minlen(5).upper
+
+-- This example will return false and "minlen"
+local valid, value = myvalidator(" \n\t a \t\n ")
+
+-- This example will return false and "ABCDE"
+local valid, value = myvalidator(" \n\t abcde \t\n ")
+```
+
+Whenever the validator fails and return false, you should not use the returned value for other purposes than
+error reporting. So, the chain works like that. The `lua-resty-validation` will not try to do anything if you
+specify chains that will never get used, such as:
+
+```lua
+local v = require "resty.validation"
+-- The input value can never be both string and number at the same time:
+local myvalidator = v.string.number:max(3)
+-- But you could write this like this
+-- (take input as a string, try to convert it to number, and check it is at most 3):
+local myvalidator = v.string.tonumber:max(3)
+```
+
+
+
+
 ## License
 
 `lua-resty-validation` uses two clause BSD license.
