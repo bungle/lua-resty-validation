@@ -398,7 +398,7 @@ local myvalidator = v.string.trim:minlen(5).upper
 -- This example will return false and "minlen"
 local valid, value = myvalidator(" \n\t a \t\n ")
 
--- This example will return false and "ABCDE"
+-- This example will return true and "ABCDE"
 local valid, value = myvalidator(" \n\t abcde \t\n ")
 ```
 
