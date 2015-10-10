@@ -620,8 +620,7 @@ function group:__call(data)
     return errors == nil, results, errors
 end
 function new(validators)
-    local self = setmetatable({ validators = validators }, group)
-    return self
+    return setmetatable({ validators = validators }, group)
 end
 local function check(validator, value, valid, v)
     if not valid then

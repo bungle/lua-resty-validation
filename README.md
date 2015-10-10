@@ -573,6 +573,44 @@ variable will look like this (`valid` would be true:, and `errors` would be `nil
 }
 ```
 
+This is great for further processing and sending the fields as JSON encoded back
+to the client-side Javascript application, but usually this is too heavy construct
+to be send to the backend layer. To get a simple key value table, we can call this
+fields table:
+
+```lua
+local data = fields()
+```
+
+The `data` variable will now contain:
+
+```lua
+{
+    nick = "test",
+    email = "test@test.org",
+    email2 = "test@test.org",
+    password = "qwerty123",
+    password2 = "qwerty123"
+}
+```
+
+Now this is something you can send for example in Redis or whatever database (abstraction) layer
+you have. But, well, this doesn't stop here, if say your database layer is only interested in
+`nick`, `email` and `password` (e.g. strip those duplicates), you can even call the `data` table:
+
+```lua
+local realdata = data("nick", "email", "password")
+```
+
+The `realdata` will now contain:
+
+```lua
+{
+    nick = "test",
+    email = "test@test.org",
+    password = "qwerty123"
+}
+```
 
 
 ## License
