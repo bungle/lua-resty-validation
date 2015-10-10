@@ -518,6 +518,63 @@ register{
 
 ```
 
+The great thing about group validators is that you can JSON encode the fields and errors
+table and return it to client. This might come handy when building a single page application
+and you need to report server side errors on client. In the above example, the `fields`
+variable will look like this (`valid would be true:, and `errors` would be `nil`):
+
+```lua
+{
+    email2 = {
+        unvalidated = false,
+        value = "test@test.org",
+        input = "test@test.org",
+        name = "email2",
+        valid = true,
+        invalid = false,
+        validated = true
+    },
+    nick = {
+        unvalidated = false,
+        value = "test",
+        input = "test",
+        name = "nick",
+        valid = true,
+        invalid = false,
+        validated = true
+    },
+    email = {
+        unvalidated = false,
+        value = "test@test.org",
+        input = "test@test.org",
+        name = "email",
+        valid = true,
+        invalid = false,
+        validated = true
+    },
+    password2 = {
+        unvalidated = false,
+        value = "qwerty123",
+        input = "qwerty123",
+        name = "password2",
+        valid = true,
+        invalid = false,
+        validated = true
+    },
+    password = {
+        unvalidated = false,
+        value = "qwerty123",
+        input = "qwerty123",
+        name = "password",
+        valid = true,
+        invalid = false,
+        validated = true
+    }
+}
+```
+
+
+
 ## License
 
 `lua-resty-validation` uses two clause BSD license.
