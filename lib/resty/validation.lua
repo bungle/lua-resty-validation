@@ -509,46 +509,33 @@ function fields:__call(...)
 end
 local field = {}
 field.__index = field
-function field.new(opts)
-    local self = setmetatable({}, field)
-    if type(opts) == "table" then
-        self.name = opts.name
-        self.input = opts.input
-        if opts.value then
-            self:accept(opts.value)
-        elseif opts.error then
-            self:reject(opts.error)
-        elseif opts.input then
-            self:init(opts.input)
-        else
-            self:accept(nil)
-        end
-    end
-    return self
+function field.new(name, input )
+    return setmetatable({
+        name = name,
+        input = input,
+        value = input,
+        valid = true,
+        invalid = false,
+        validated = false,
+        unvalidated = true
+    }, field)
 end
 function field:__tostring()
     if type(self.value) == "string" then return self.value end
     return tostring(self.value)
-end
-function field:init(input)
-    self.value = input
-    self.valid = true
-    self.invalid = false
-    self.validated = false
-    self.unvalidated = true
-end
-function field:reject(error)
-    self.error = error
-    self.valid = false
-    self.invalid = true
-    self.validated = true
-    self.unvalidated = false
 end
 function field:accept(value)
     self.error = nil
     self.value = value
     self.valid = true
     self.invalid = false
+    self.validated = true
+    self.unvalidated = false
+end
+function field:reject(error)
+    self.error = error
+    self.valid = false
+    self.invalid = true
     self.validated = true
     self.unvalidated = false
 end
@@ -567,10 +554,10 @@ function group:compare(comparison)
     local f2 = trim(sub(comparison,    e + 1))
     self[#self+1] = function(fields)
         if not fields[f1] then
-            fields[f1] = field.new{ name = f1 }
+            fields[f1] = field.new(f1)
         end
         if not fields[f2] then
-            fields[f2] = field.new{ name = f2 }
+            fields[f2] = field.new(f2)
         end
         local v1 = fields[f1]
         local v2 = fields[f2]
@@ -589,7 +576,6 @@ function group:compare(comparison)
             elseif o == ">" then
                 valid = x > y
             end
-            print("validating", x, o, y)
             if valid then
                 v1:accept(x)
                 v2:accept(y)
@@ -603,16 +589,20 @@ end
 function group:__call(data)
     local results = setmetatable({}, fields)
     local validators = self.validators
-    for name, input in pairs(data) do
-        if validators[name] then
-            local valid, value = validators[name](input)
-            if valid then
-                results[name] = field.new{ name = name, input = input, value = value }
-            else
-                results[name] = field.new{ name = name, input = input, error = value }
-            end
+    for name, func in pairs(validators) do
+        local input = data[name]
+        local valid, value = func(input)
+        local fld = field.new(name, input)
+        if valid then
+            fld:accept(value)
         else
-            results[name] = field.new{ name = name, input = input, validated = false }
+            fld:reject(value)
+        end
+        results[name] = fld
+    end
+    for name, input in pairs(data) do
+        if not results[name] then
+            results[name] = field.new(name, input)
         end
     end
     for _, v in ipairs(self) do
