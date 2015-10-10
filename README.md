@@ -449,7 +449,7 @@ end
 
 This quickly gets a little bit dirty, and that's why we have Group validators.
 
-### table valdation.new([table of validators])
+### table validation.new([table of validators])
 
 This function is where the group validation kicks in. No say that you have a registration
 form that asks you nick, email (same twice), and password (same twice).
