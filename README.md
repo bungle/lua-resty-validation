@@ -328,7 +328,7 @@ local valid, value = validation:unescapeuri():crc32()("https://github.com/")
 
 #### resty.validation.tz extension
 
-This set of validators and filters is based on the great [`luatz`](https://github.com/daurnimator/luatz)
+This set of validators and filters is based on the great `[luatz](https://github.com/daurnimator/luatz)`
 library by @daurnimator, that is a library for time and date manipulation. To use this extension, all you need
 to do is:
 
