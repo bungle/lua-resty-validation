@@ -1,3 +1,7 @@
+Changes with lua-resty-validation 2.1                            10 Oct 2015
+
+    *) Bugfix: fixed leaking global new function
+
 Changes with lua-resty-validation 2.0                            10 Oct 2015
 
     *) Total rewrite.
