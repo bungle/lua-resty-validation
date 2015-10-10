@@ -521,7 +521,7 @@ register{
 The great thing about group validators is that you can JSON encode the fields and errors
 table and return it to client. This might come handy when building a single page application
 and you need to report server side errors on client. In the above example, the `fields`
-variable will look like this (`valid would be true:, and `errors` would be `nil`):
+variable will look like this (`valid` would be true:, and `errors` would be `nil`):
 
 ```lua
 {
