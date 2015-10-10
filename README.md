@@ -415,8 +415,39 @@ local myvalidator = v.string.number:max(3)
 local myvalidator = v.string.tonumber:max(3)
 ```
 
+As you see, this is a way to define single reusable validators. You can for example predefine your set of basic
+single validator chains and store it in your own module from which you can reuse the same validation logic in
+different parts of your application. It is good idea to start defining single reusable validators, and then reuse
+them in group validators.
 
+E.g. say you have module called `validators`:
 
+```lua
+local v = require "resty.validation"
+return {
+    nick     = v.string.trim:minlen(2),
+    email    = v.string.trim.email,
+    password = v.string.trim:minlen(8)
+}
+```
+
+And now you have "register" function somewhere in your application:
+
+```lua
+local validate = require "validators"
+local function register(nick, email, password)
+    local vn, nick     = validate.nick(nick)
+    local ve, email    = validate.email(email)
+    local vp, password = validate.password(password)
+    if vn and ve and vp then
+        -- input is valid, do something with nick, email, and password
+    else
+        -- input is invalid, nick, email, and password contain the error reasons
+    end
+end
+```
+
+This quickly gets a little bit dirty, and that's why we have Group validators.
 
 ## License
 
