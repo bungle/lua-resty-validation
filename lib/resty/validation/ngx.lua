@@ -69,5 +69,6 @@ return {
     base64dec   = validators.base64dec,
     crc32short  = validators.crc32short,
     crc32long   = validators.crc32long,
-    crc32       = validators.crc32
+    crc32       = validators.crc32,
+    regex       = factory.regex
 }
