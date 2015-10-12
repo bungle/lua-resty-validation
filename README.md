@@ -328,6 +328,7 @@ It will monkey patch the adapters that it will provide in `resty.validation`, an
 * `crc32short`
 * `crc32long`
 * `crc32`
+* `regex(regex[, options])` (uses ngx.re.match)
 
 (there is both factory and argument-less version of these)
 
