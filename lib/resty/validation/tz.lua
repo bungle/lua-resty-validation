@@ -7,8 +7,8 @@ function factory.totimetable()
         if #value == 10 then
             value = value .. "T00:00:00Z"
         end
-        local ok, tt = pcall(parse, value)
-        if ok then
+        local tt = parse(value)
+        if tt then
             return true, tt
         end
         return false
