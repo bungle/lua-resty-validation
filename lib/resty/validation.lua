@@ -487,6 +487,12 @@ function field:__tostring()
     if type(self.value) == "string" then return self.value end
     return tostring(self.value)
 end
+function field:state(invalid, valid, unvalidated)
+    if self.unvalidated then
+        return unvalidated
+    end
+    return self.valid and valid or invalid
+end
 function field:accept(value)
     self.error = nil
     self.value = value
