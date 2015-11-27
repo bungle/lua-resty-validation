@@ -616,6 +616,47 @@ The `realdata` will now contain:
 }
 ```
 
+### table field.accept(value)
+
+For field you can call `accept` that does this:
+
+```lua
+self.error = nil
+self.value = value
+self.valid = true
+self.invalid = false
+self.validated = true
+self.unvalidated = false
+```
+
+### table field.reject(error)
+
+For field you can call `reject` that does this:
+
+```lua
+self.error = error
+self.valid = false
+self.invalid = true
+self.validated = true
+self.unvalidated = false
+```
+
+### table field.state(invalid, valid, unvalidated)
+
+Calling `state` on field is great when embedding validation results inside say HTML template, such as `lua-resty-template`. Here is an example nusing `lua-resty-template`:
+
+```html
+<form method="post">
+    <input class="{{ form.email:state('invalid', 'valid') }}"
+            name="email"
+            type="text"
+            placeholder="Email"
+            value="{{ form.email.input }}">
+    <button type="submit">Join</button>
+</form>
+```
+
+So depending on email field's state this will add a class to input element (e.g. making input's border red or green for example). We don't care about unvalidated (e.g. when the user first loaded the page and form) state here.
 
 ## License
 
