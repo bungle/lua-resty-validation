@@ -510,7 +510,7 @@ function field:reject(error)
 end
 local fields = {}
 function fields:__call(...)
-    local valid, invalid, validatad, unvalidated
+    local valid, invalid, validated, unvalidated
     local argc = select("#", ...)
     if argc == 0 then
         valid = true
