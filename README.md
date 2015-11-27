@@ -616,7 +616,7 @@ The `realdata` will now contain:
 }
 ```
 
-### table field.accept(value)
+### field.accept(value)
 
 For field you can call `accept` that does this:
 
@@ -629,7 +629,7 @@ self.validated = true
 self.unvalidated = false
 ```
 
-### table field.reject(error)
+### field.reject(error)
 
 For field you can call `reject` that does this:
 
@@ -641,7 +641,7 @@ self.validated = true
 self.unvalidated = false
 ```
 
-### table field.state(invalid, valid, unvalidated)
+### string field.state(invalid, valid, unvalidated)
 
 Calling `state` on field is great when embedding validation results inside say HTML template, such as `lua-resty-template`. Here is an example nusing `lua-resty-template`:
 
