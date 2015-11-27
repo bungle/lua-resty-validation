@@ -1,3 +1,8 @@
+Changes with lua-resty-validation 2.2                            27 Nov 2015
+
+    *) Bugfix: there was a typo in a code that leaked a global variable in
+               fields:__call method.
+
 Changes with lua-resty-validation 2.1                            10 Oct 2015
 
     *) Bugfix: fixed leaking global new function
