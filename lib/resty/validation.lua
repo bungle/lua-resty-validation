@@ -8,6 +8,7 @@ local type = type
 local pairs = pairs
 local ipairs = ipairs
 local error = error
+local pcall = pcall
 local match = string.match
 local lower = string.lower
 local upper = string.upper
