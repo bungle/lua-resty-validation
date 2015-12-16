@@ -9,6 +9,7 @@ local pairs = pairs
 local ipairs = ipairs
 local error = error
 local pcall = pcall
+local string = string
 local match = string.match
 local lower = string.lower
 local upper = string.upper
@@ -17,6 +18,7 @@ local gsub = string.gsub
 local sub = string.sub
 local len = utf8 and utf8.len or function(s) return select(2, gsub(s, '[^\x80-\xC1]', '')) end
 local iotype = io.type
+local math = math
 local mathtype = math.type
 local tointeger = math.tointeger
 local abs = math.abs
@@ -83,35 +85,35 @@ function factory.null()
 end
 factory["nil"] = factory.null
 function factory.boolean()
-    return factory.type("boolean")
+    return factory.type "boolean"
 end
 function factory.number()
-    return factory.type("number")
+    return factory.type "number"
 end
 function factory.string()
-    return factory.type("string")
+    return factory.type "string"
 end
 function factory.table()
-    return factory.type("table")
+    return factory.type "table"
 end
 function factory.userdata()
-    return factory.type("userdata")
+    return factory.type "userdata"
 end
 function factory.func()
-    return factory.type("function")
+    return factory.type "function"
 end
 factory["function"] = factory.func
 function factory.thread()
-    return factory.type("thread")
+    return factory.type "thread"
 end
 function factory.integer()
-    return factory.type("integer")
+    return factory.type "integer"
 end
 function factory.float()
-    return factory.type("float")
+    return factory.type "float"
 end
 function factory.file()
-    return factory.type("file")
+    return factory.type "file"
 end
 function factory.inf()
     return function(value)

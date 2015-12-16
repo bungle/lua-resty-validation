@@ -1,4 +1,5 @@
 local validation   = require "resty.validation"
+local ngx          = ngx
 local escapeuri    = ngx.escape_uri
 local unescapeuri  = ngx.unescape_uri
 local base64enc    = ngx.encode_base64
