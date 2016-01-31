@@ -387,7 +387,7 @@ function factory.email()
             at = i
             i = find(value, "@", i + 1)
         end
-        if not at or at > 65 then return false end
+        if not at or at > 65 or at == 1 then return false end
         local lp = sub(value, 1, at - 1)
         if not lp then return false end
         local dp = sub(value, at + 1)
