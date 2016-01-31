@@ -643,7 +643,7 @@ self.unvalidated = false
 
 ### string field:state(invalid, valid, unvalidated)
 
-Calling `state` on field is great when embedding validation results inside say HTML template, such as `lua-resty-template`. Here is an example nusing `lua-resty-template`:
+Calling `state` on field is great when embedding validation results inside say HTML template, such as `lua-resty-template`. Here is an example using `lua-resty-template`:
 
 ```html
 <form method="post">
