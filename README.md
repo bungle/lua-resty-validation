@@ -376,7 +376,7 @@ local valid, ts = validation.totimestamp("1990-12-31T23:59:60Z")
 local valid, ts = validation.totimestamp("1996-12-19")
 ```
 
-#### resty.validation.tz extension
+#### resty.validation.utf8 extension
 
 This set of validators and filters is based on the great [`utf8rewind`](https://bitbucket.org/knight666/utf8rewind)
 library by Quinten Lansu - a system library written in C designed to extend the default string handling functions
