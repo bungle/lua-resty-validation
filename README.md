@@ -305,6 +305,8 @@ Currently `lua-resty-validation` has support for two extensions or plugins that 
 
 * `resty.validation.ngx`
 * `resty.validation.tz`
+* `resty.validation.utf8`
+
 
 These are something you can look at if you want to build your own validator extension. If you do
 so, and think that it would be usable for others as well, mind you to send your extension as a pull-request
@@ -372,6 +374,101 @@ require "resty.validation.tz"
 local validation = require "resty.validation"
 local valid, ts = validation.totimestamp("1990-12-31T23:59:60Z")
 local valid, ts = validation.totimestamp("1996-12-19")
+```
+
+#### resty.validation.tz extension
+
+This set of validators and filters is based on the great [`utf8rewind`](https://bitbucket.org/knight666/utf8rewind)
+library by Quinten Lansu - a system library written in C designed to extend the default string handling functions
+with support for UTF-8 encoded text. It needs my LuaJIT FFI wrapper [`lua-resty-utf8rewind`](https://github.com/bungle/lua-resty-utf8rewind)
+to work. When the mentioned requirements are installed, the rest is easy. To use this extension, all you need
+to do is:
+
+```lua
+require "resty.validation.utf8"
+```
+
+It will monkey patch the adapters that it will provide in `resty.validation`, and those are currently:
+
+* `utf8upper`
+* `utf8lower`
+* `utf8title`
+
+(there is both factory and argument-less version of these)
+
+There is also a few factory validators / filters:
+
+* `utf8normalize`
+* `utf8category`
+
+The `utf8normalize` normalizes the UTF-8 input to one of these normalization formats:
+
+* `C` (or `NFC`)
+* `D` (or `NFD`)
+* `KC` (or `NFKC`)
+* `KD` (or `NFKD`)
+
+The `utf8category` checks that the input string is in one of the following categories (so, you may think it has
+multiple validators built-in to work with UTF-8 string validation):
+
+* `LETTER_UPPERCASE`
+* `LETTER_LOWERCASE`
+* `LETTER_TITLECASE`
+* `LETTER_MODIFIER`
+* `CASE_MAPPED`
+* `LETTER_OTHER`
+* `LETTER`
+* `MARK_NON_SPACING`
+* `MARK_SPACING`
+* `MARK_ENCLOSING`
+* `MARK`
+* `NUMBER_DECIMAL`
+* `NUMBER_LETTER`
+* `NUMBER_OTHER`
+* `NUMBER`
+* `PUNCTUATION_CONNECTOR`
+* `PUNCTUATION_DASH`
+* `PUNCTUATION_OPEN`
+* `PUNCTUATION_CLOSE`
+* `PUNCTUATION_INITIAL`
+* `PUNCTUATION_FINAL`
+* `PUNCTUATION_OTHER`
+* `PUNCTUATION`
+* `SYMBOL_MATH`
+* `SYMBOL_CURRENCY`
+* `SYMBOL_MODIFIER`
+* `SYMBOL_OTHER`
+* `SYMBOL`
+* `SEPARATOR_SPACE`
+* `SEPARATOR_LINE`
+* `SEPARATOR_PARAGRAPH`
+* `SEPARATOR`
+* `CONTROL`
+* `FORMAT`
+* `SURROGATE`
+* `PRIVATE_USE`
+* `UNASSIGNED`
+* `COMPATIBILITY`
+* `ISUPPER`
+* `ISLOWER`
+* `ISALPHA`
+* `ISDIGIT`
+* `ISALNUM`
+* `ISPUNCT`
+* `ISGRAPH`
+* `ISSPACE`
+* `ISPRINT`
+* `ISCNTRL`
+* `ISXDIGIT`
+* `ISBLANK`
+* `IGNORE_GRAPHEME_CLUSTER`
+
+##### Example
+
+```lua
+require "resty.validation.utf8"
+local validation = require "resty.validation"
+local valid, ts = validation:utf8category("LETTER_UPPERCASE")("TEST")
 ```
 
 ## API
@@ -663,7 +760,7 @@ So depending on email field's state this will add a class to input element (e.g.
 `lua-resty-validation` uses two clause BSD license.
 
 ```
-Copyright (c) 2015, Aapo Talvensaari
+Copyright (c) 2016, Aapo Talvensaari
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
