@@ -398,8 +398,8 @@ It will monkey patch the adapters that it will provide in `resty.validation`, an
 
 There is also a few factory validators / filters:
 
-* `utf8normalize`
-* `utf8category`
+* `utf8normalize(form)`
+* `utf8category(category)`
 
 The `utf8normalize` normalizes the UTF-8 input to one of these normalization formats:
 
