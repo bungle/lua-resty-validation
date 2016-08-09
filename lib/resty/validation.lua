@@ -24,7 +24,7 @@ local tointeger = math.tointeger
 local abs = math.abs
 local unpack = unpack or table.unpack
 local nothing = {}
-local inf = 1 / 0
+local inf = math.huge
 local sreverse = string.reverse
 local stopped = {}
 local operators = { "<=", ">=", "==", "~=", "<", ">" }
