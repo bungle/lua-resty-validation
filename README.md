@@ -198,6 +198,7 @@ Validation factory consist of different validators and filters used to validate 
 * `reverse`, reverses the value (string or number) (UTF-8)
 * `coalesce(...)`, if the value is nil, returns first non-nil value passed as arguments
 * `email()`, validates that the value is email address
+* `call(function)`, validates / filters the value against custom inline validator / filter
 * `optional([default])`, stops validation if the value is empty string `""` or `nil` and returns `true`, and either, `default` or `value`
 
 #### Conditional Validation Factory Validators
@@ -299,6 +300,20 @@ function()
 end
 ```
 
+### Custom (Inline) Validators and Filters
+
+Sometimes you may just have one-off validators / filters that you are not using elsewhere, or that you just
+want to supply quickly an additional validator / filter for a specific case. To make that easy and straight
+forward, we introduced `call` factory method with `lua-resty-validation` 2.4. Here is an example:
+
+```lua
+validation:call(function(value)
+    -- now validate / filter the value, and return the results
+    -- here we just return false (aka making validation to fail) 
+    return false
+end)("Check this value"))
+```
+
 ### Built-in Validator Extensions
 
 Currently `lua-resty-validation` has support for two extensions or plugins that you can enable:
@@ -306,7 +321,6 @@ Currently `lua-resty-validation` has support for two extensions or plugins that 
 * `resty.validation.ngx`
 * `resty.validation.tz`
 * `resty.validation.utf8`
-
 
 These are something you can look at if you want to build your own validator extension. If you do
 so, and think that it would be usable for others as well, mind you to send your extension as a pull-request
@@ -469,6 +483,31 @@ multiple validators built-in to work with UTF-8 string validation):
 require "resty.validation.utf8"
 local validation = require "resty.validation"
 local valid, ts = validation:utf8category("LETTER_UPPERCASE")("TEST")
+```
+
+#### resty.validation.injection extension
+
+This set of validators and filters is based on the great [`libinjection`](https://github.com/client9/libinjection)
+library by Nick Galbreath - a SQL / SQLI / XSS tokenizer parser analyzer. It needs my LuaJIT FFI wrapper
+[`lua-resty-injection`](https://github.com/bungle/lua-resty-injection) to work. When the mentioned requirements
+are installed, the rest is easy. To use this extension, all you need to do is:
+
+```lua
+require "resty.validation.injection"
+```
+
+It will monkey patch the adapters that it will provide in `resty.validation`, and those are currently:
+
+* `sqli`, returns `false` if SQL injection was detected, otherwise returns `true`
+* `xss`, returns `false` if Cross-Site Scripting injection was detected, otherwise returns `true`
+
+##### Example
+
+```lua
+require "resty.validation.injection"
+local validation = require "resty.validation"
+local valid, ts = validation.sqli("test'; DELETE FROM users;")
+local valid, ts = validation.xss("test <script>alert('XSS');</script>")
 ```
 
 ## API

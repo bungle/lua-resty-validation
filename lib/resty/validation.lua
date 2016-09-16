@@ -415,6 +415,11 @@ function factory.email()
         return match(value, "%w*%p*@+%w*%.?%w*") ~= nil
     end
 end
+function factory.call(func)
+    return function(value)
+        return func(value)
+    end
+end
 function factory.optional(default)
     return function(value)
         if value == nil or value == "" then

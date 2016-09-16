@@ -1,3 +1,9 @@
+Changes with lua-resty-validation 2.4                            16 Sep 2016
+
+    *) Feature: added support for custom (inline) validatiors
+    *) Feature: added resty.validation.injection extension
+                (uses libinjection)
+
 Changes with lua-resty-validation 2.3                            22 Mar 2016
 
     *) Feature: added resty.validation.utf8 extension (uses utf8rewind)
