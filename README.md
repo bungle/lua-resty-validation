@@ -801,6 +801,10 @@ Calling `state` on field is great when embedding validation results inside say H
 
 So depending on email field's state this will add a class to input element (e.g. making input's border red or green for example). We don't care about unvalidated (e.g. when the user first loaded the page and form) state here.
 
+## Changes
+
+The changes of every release of this module is recorded in [Changes.md](https://github.com/bungle/lua-resty-validation/blob/master/Changes.md) file.
+
 ## License
 
 `lua-resty-validation` uses two clause BSD license.
