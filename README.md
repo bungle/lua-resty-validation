@@ -77,6 +77,12 @@ Just place [`validation.lua`](https://github.com/bungle/lua-resty-validation/blo
 somewhere in your `package.path`, preferably under `resty` directory. If you are using OpenResty, the default
 location would be `/usr/local/openresty/lualib/resty`.
 
+### Using OpenResty Package Manager (opm)
+
+```Shell
+$ opm get bungle/lua-resty-prettycjson
+```
+
 ### Using LuaRocks
 
 ```Shell
