@@ -6,6 +6,8 @@ local base64enc    = ngx.encode_base64
 local base64dec    = ngx.decode_base64
 local crc32short   = ngx.crc32_short
 local crc32long    = ngx.crc32_long
+local md5          = ngx.md5
+local md5bin       = ngx.md5bin
 local match        = ngx.re.match
 local validators   = validation.validators
 local factory      = getmetatable(validators)
@@ -51,6 +53,13 @@ function factory.crc32()
         return true, crc32long(value)
     end
 end
+function factory.md5(bin)
+    return function(value)
+        local digest = bin and md5bin(value) or md5(value)
+        return true, digest
+    end
+end
+
 function factory.regex(regex, options)
     return function(value)
         return (match(value, regex, options)) ~= nil
@@ -63,6 +72,7 @@ validators.base64dec   = factory.base64dec()
 validators.crc32short  = factory.crc32short()
 validators.crc32long   = factory.crc32long()
 validators.crc32       = factory.crc32()
+validators.md5         = factory.md5()
 return {
     escapeuri   = validators.escapeuri,
     unescapeuri = validators.unescapeuri,
@@ -71,5 +81,6 @@ return {
     crc32short  = validators.crc32short,
     crc32long   = validators.crc32long,
     crc32       = validators.crc32,
+    md5         = validators.md5,
     regex       = factory.regex
 }

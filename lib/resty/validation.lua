@@ -1,3 +1,5 @@
+local _VERSION = "2.5"
+
 local setmetatable = setmetatable
 local getmetatable = getmetatable
 local rawget = rawget
@@ -660,7 +662,7 @@ local function check(validator, value, valid, v)
     return true, v
 end
 local function validation(func, parent_f, parent, method)
-    return setmetatable({ new = new, group = group, fields = setmetatable({}, fields), nothing = nothing, stop = stop, validators = validators }, {
+    return setmetatable({ new = new, group = group, fields = setmetatable({}, fields), nothing = nothing, stop = stop, validators = validators, _VERSION = _VERSION }, {
         __index = function(self, index)
             return validation(function(...)
                 local valid, value = check(index, select(1, ...), func(...))

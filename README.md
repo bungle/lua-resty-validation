@@ -344,12 +344,14 @@ It will monkey patch the adapters that it will provide in `resty.validation`, an
 * `crc32short`
 * `crc32long`
 * `crc32`
+* `md5`
 
 (there is both factory and argument-less version of these)
 
-There is also regex matcher in ngx that uses `ngx.re.match`:
+There is also regex matcher in ngx extension that uses `ngx.re.match`, and parameterized `md5`:
 
 * `regex(regex[, options])`
+* `md5([bin])`
 
 ##### Example
 
@@ -514,6 +516,11 @@ local valid, ts = validation.xss("test <script>alert('XSS');</script>")
 
 I'm not going here for details for all the different validators and filters there is because they all follow the
 same logic, but I will show some general ways how this works.
+
+### validation._VERSION
+
+This field contains a version of the validation library, e.g. it's value can be `"2.5"` for
+the version 2.5 of this library.
 
 ### boolean, value/error validation...
 
