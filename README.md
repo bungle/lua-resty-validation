@@ -80,7 +80,7 @@ location would be `/usr/local/openresty/lualib/resty`.
 ### Using OpenResty Package Manager (opm)
 
 ```Shell
-$ opm get bungle/lua-resty-prettycjson
+$ opm get bungle/lua-resty-validation
 ```
 
 ### Using LuaRocks
@@ -89,7 +89,7 @@ $ opm get bungle/lua-resty-prettycjson
 $ luarocks install lua-resty-validation
 ```
 
-LuaRocks repository for `lua-resty-validation` is located here: https://luarocks.org/modules/bungle/lua-resty-validation.
+LuaRocks repository for `lua-resty-validation` is located at https://luarocks.org/modules/bungle/lua-resty-validation.
 
 ## Built-in Validators and Filters
 
