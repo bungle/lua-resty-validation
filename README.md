@@ -73,9 +73,7 @@ local data = data{ "artist" }
 
 ## Installation
 
-Just place [`validation.lua`](https://github.com/bungle/lua-resty-validation/blob/master/lib/resty/validation.lua)
-somewhere in your `package.path`, preferably under `resty` directory. If you are using OpenResty, the default
-location would be `/usr/local/openresty/lualib/resty`.
+Just place [`validation.lua`](https://github.com/bungle/lua-resty-validation/blob/master/lib/resty/validation.lua) and [`validation`](https://github.com/bungle/lua-resty-template/tree/master/lib/resty/validation) directory somewhere in your `package.path`, under `resty` directory. If you are using OpenResty, the default location would be `/usr/local/openresty/lualib/resty`.
 
 ### Using OpenResty Package Manager (opm)
 
