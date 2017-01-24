@@ -17,7 +17,7 @@ local valid, e = smallnumber(50) -- valid = false, e = "between"
 
 -- Validators can do filtering (i.e. modify the value being validated)
 -- valid = true, s = "HELLO WORLD!"
-local valid, s = validation.string.upper("hello world!")
+local valid, s = validation.string.upper "hello world!"
 
 -- You may extend the validation library with your own validators and filters...
 validation.validators.capitalize = function(value) 
@@ -25,7 +25,7 @@ validation.validators.capitalize = function(value)
 end
 
 -- ... and then use it
-local valid, e = validation.capitalize("abc") -- valid = true,  e = "Abc"
+local valid, e = validation.capitalize "abc" -- valid = true,  e = "Abc"
 
 -- You can also group validate many values
 local group = validation.new{
@@ -49,19 +49,19 @@ end
 
 -- By default this returns only the valid fields' names and values:
 local data = fields()
-local data = fields("valid")
+local data = fields "valid"
 
 -- To get only the invalid fields' names and values call:
-local data = fields("invalid")
+local data = fields "invalid"
 
 -- To get only the validated fields' names and values call (whether or not they are valid):
-local data = fields("validated")
+local data = fields "validated"
 
 -- To get only the unvalidated fields' names and values call (whether or not they are valid):
-local data = fields("unvalidated")
+local data = fields "unvalidated"
 
 -- To get all, call:
-local data = fields("all")
+local data = fields "all"
 
 -- Or combine:
 local data = fields("valid", "invalid")
