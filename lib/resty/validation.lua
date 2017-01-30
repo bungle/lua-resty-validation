@@ -639,7 +639,9 @@ function group:requisite(r)
         if n > 0 then
             for i = 1, c do
                 local f = fields[r[i]]
-                f:accept(f.value)
+                if f.valid then
+                    f:accept(f.value)
+                end
             end
         else
             for i = 1, c do
@@ -671,7 +673,9 @@ function group:requisites(r, n)
         if n <= j then
             for i = 1, c do
                 local f = fields[r[i]]
-                f:accept(f.value)
+                if f.valid then
+                    f:accept(f.value)
+                end
             end
         else
             for i = 1, c do

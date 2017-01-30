@@ -242,9 +242,11 @@ Every other argument is passed to the actual validation factory validator.
 
 ### Group Validators
 
-`lua-resty-validation` currently supports one predefined validator, and that is:
+`lua-resty-validation` currently supports a few predefined validators:
 
-* `compare(comparison)`, compares two fields and sets fields invalid or valid according to comparison:
+* `compare(comparison)`, compares two fields and sets fields invalid or valid according to comparison
+* `requisite{ fields }`, at least of of the requisite fields is required, even if they by themselves are optional
+* `requisites({ fields }, number)`, at least `number` of requisites fields are required (by default all of them)
 
 ```lua
 local ispassword = validation.trim:minlen(8)
@@ -254,6 +256,24 @@ local group = validation.new{
 }
 group:compare "password1 == password2"
 local valid, fields, errors = group{ password1 = "qwerty123", password2 = "qwerty123" }
+
+local optional = validation:optional ""
+local group = validation.new{
+    text = optional,
+    html = optional
+}
+group:requisite{ "text", "html" }
+local valid, fields, errors = group{ text = "", html = "" }
+
+
+local optional = validation:optional ""
+local group = validation.new{
+    text = optional,
+    html = optional
+}
+group:requisites({ "text", "html" }, 2)
+-- or group:requisites{ "text", "html" }
+local valid, fields, errors = group{ text = "", html = "" }
 ```
 
 You can use normal Lua relational operators in `compare` group validator:
@@ -264,6 +284,13 @@ You can use normal Lua relational operators in `compare` group validator:
 * `>=`
 * `==`
 * `~=`
+
+`requisite` and `requisites` check if the field value is `nil` or `""`(empty string).
+With `requisite`, if all specified fields are `nil` or `""` then all fields are invalid,
+and if at least one of the fields is valid then all the fields are valid. `requisites`
+works the same, but there you can define the number of how many fields you want to have
+a value that is not `nil` and not an empty string `""`.
+
 
 ### Stop Validators
 
