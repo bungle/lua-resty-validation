@@ -105,6 +105,7 @@ validators (call them with dot `.`):
 * `table`
 * `userdata`
 * `func` or `["function"]` (as the function is a reserved keyword in Lua)
+* `callable` (either a function or a table with metamethod `__call`)
 * `thread`
 * `integer`
 * `float`
@@ -162,6 +163,7 @@ Validation factory consist of different validators and filters used to validate 
 * `table()`, check that value type is `table`
 * `userdata()`, check that value type is `userdata`
 * `func()` or `["function"]()`, check that value type is `function`
+* `callable()`, check that valua is callable (aka a function or a table with metamethod `__call`)
 * `thread()`, check that value type is `thread`
 * `integer()`, check that value type is `integer`
 * `float()`, check that value type is `float`
