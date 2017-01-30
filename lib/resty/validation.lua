@@ -62,6 +62,14 @@ local function istype(t)
         return function(value)
             return t == iotype(value)
         end
+    elseif t == "callable" then
+        return function(value)
+            if type(value) == "function" then
+                return true
+            end
+            local m = getmetatable(value)
+            return m and type(m.__call) == "function"
+        end
     else
         return function(value)
             return t == type(value)
@@ -103,6 +111,9 @@ function factory.userdata()
 end
 function factory.func()
     return factory.type "function"
+end
+function factory.callable()
+    return factory.type "callable"
 end
 factory["function"] = factory.func
 function factory.thread()
@@ -440,6 +451,7 @@ local validators = setmetatable({
     userdata     = factory.userdata(),
     ["function"] = factory.func(),
     func         = factory.func(),
+    callable     = factory.callable(),
     thread       = factory.thread(),
     integer      = factory.integer(),
     float        = factory.float(),
