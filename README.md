@@ -286,11 +286,15 @@ You can use normal Lua relational operators in `compare` group validator:
 * `~=`
 
 `requisite` and `requisites` check if the field value is `nil` or `""`(empty string).
-With `requisite`, if all specified fields are `nil` or `""` then all fields are invalid,
-and if at least one of the fields is valid then all the fields are valid. `requisites`
-works the same, but there you can define the number of how many fields you want to have
-a value that is not `nil` and not an empty string `""`.
+With `requisite`, if all the specified fields are `nil` or `""` then all the fields are
+invalid (provided they were not by themselves invalid), and if at least one of the fields
+is valid then all the fields are valid. `requisites` works the same, but there you can
+define the number of how many fields you want to have a value that is not `nil` and not
+an empty string `""`. These provide conditional validation in sense of:
 
+1. I have (two or more) fields
+2. All of them are optional
+3. At least one (or more) should be filled but I don't care which one as long as there is at least one
 
 ### Stop Validators
 
