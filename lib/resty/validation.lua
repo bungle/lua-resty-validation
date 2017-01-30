@@ -1,4 +1,4 @@
-local _VERSION = "2.5"
+local _VERSION = "2.6-dev"
 
 local setmetatable = setmetatable
 local getmetatable = getmetatable
@@ -482,7 +482,7 @@ function data:__call(...)
 end
 local field = {}
 field.__index = field
-function field.new(name, input )
+function field.new(name, input)
     return setmetatable({
         name = name,
         input = input,
@@ -600,8 +600,71 @@ function group:compare(comparison)
                 v1:accept(x)
                 v2:accept(y)
             else
-                v1:reject("compare")
-                v2:reject("compare")
+                v1:reject "compare"
+                v2:reject "compare"
+            end
+        end
+    end
+end
+function group:requisite(r)
+    local c = #r
+    self[#self+1] = function(fields)
+        local n = c
+        local valid = true
+        for i = 1, c do
+            local f = r[i]
+            if not fields[f] then
+                fields[f] = field.new(f)
+            end
+            local field = fields[f]
+            if field.valid then
+                local v = field.value
+                if v == nil or v == "" then
+                    n = n - 1
+                end
+            end
+        end
+        if n > 0 then
+            for i = 1, c do
+                local f = fields[r[i]]
+                f:accept(f.value)
+            end
+        else
+            for i = 1, c do
+                local f = fields[r[i]]
+                f:reject "requisite"
+            end
+        end
+    end
+end
+function group:requisites(r, n)
+    local c = #r
+    local n = n or c
+    self[#self+1] = function(fields)
+        local j = c
+        local valid = true
+        for i = 1, c do
+            local f = r[i]
+            if not fields[f] then
+                fields[f] = field.new(f)
+            end
+            local field = fields[f]
+            if field.valid then
+                local v = field.value
+                if v == nil or v == "" then
+                    j = j - 1
+                end
+            end
+        end
+        if n <= j then
+            for i = 1, c do
+                local f = fields[r[i]]
+                f:accept(f.value)
+            end
+        else
+            for i = 1, c do
+                local f = fields[r[i]]
+                f:reject "requisites"
             end
         end
     end
