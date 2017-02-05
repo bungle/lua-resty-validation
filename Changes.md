@@ -2,6 +2,12 @@
 
 All notable changes to `lua-resty-validation` will be documented in this file.
 
+## [2.6] - 2017-02-05
+### Added
+- Added callable validator
+- Added requisite and requisites group validators
+  (see also: https://github.com/bungle/lua-resty-validation/issues/3)
+
 ## [2.5] - 2016-09-29
 ### Added
 - Support for the official OpenResty package manager (opm).
