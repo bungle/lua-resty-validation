@@ -257,7 +257,7 @@ local group = validation.new{
 group:compare "password1 == password2"
 local valid, fields, errors = group{ password1 = "qwerty123", password2 = "qwerty123" }
 
-local optional = validation:optional ""
+local optional = validation:optional"".trim
 local group = validation.new{
     text = optional,
     html = optional
@@ -294,7 +294,7 @@ an empty string `""`. These provide conditional validation in sense of:
 
 1. I have (two or more) fields
 2. All of them are optional
-3. At least one (or more) should be filled but I don't care which one as long as there is at least one
+3. At least one / defined number of fields should be filled but I don't care which one as long as there is at least one / defined number of fields filled
 
 ### Stop Validators
 
