@@ -247,6 +247,7 @@ Every other argument is passed to the actual validation factory validator.
 * `compare(comparison)`, compares two fields and sets fields invalid or valid according to comparison
 * `requisite{ fields }`, at least of of the requisite fields is required, even if they by themselves are optional
 * `requisites({ fields }, number)`, at least `number` of requisites fields are required (by default all of them)
+* `call(function)`, calls a custom (or inline) group validation function
 
 ```lua
 local ispassword = validation.trim:minlen(8)
@@ -274,6 +275,14 @@ local group = validation.new{
 group:requisites({ "text", "html" }, 2)
 -- or group:requisites{ "text", "html" }
 local valid, fields, errors = group{ text = "", html = "" }
+
+
+group:call(function(fields)
+    if fields.text.value == "hello" then
+        fields.text:reject "text cannot be 'hello'"
+        fields.html:reject "because text was 'hello', this field is also invalidated"
+    end
+end)
 ```
 
 You can use normal Lua relational operators in `compare` group validator:
@@ -350,6 +359,9 @@ validation:call(function(value)
     return false
 end)("Check this value"))
 ```
+
+(of course it doesn't need to be inline function as in Lua all functions are first class citizens and they can 
+be passed around as parameters)
 
 ### Built-in Validator Extensions
 
@@ -693,10 +705,10 @@ end
 -- And you might call it like:
 
 register{
-    nick = "test",
-    email = "test@test.org",
-    email2 = "test@test.org",
-    password = "qwerty123",
+    nick      = "test",
+    email     = "test@test.org",
+    email2    = "test@test.org",
+    password  = "qwerty123",
     password2 = "qwerty123"
 }
 
