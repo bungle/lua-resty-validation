@@ -1,4 +1,4 @@
-local _VERSION = "2.6"
+local _VERSION = "2.7"
 local setmetatable = setmetatable
 local getmetatable = getmetatable
 local rawget = rawget

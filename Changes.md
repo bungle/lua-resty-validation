@@ -2,6 +2,10 @@
 
 All notable changes to `lua-resty-validation` will be documented in this file.
 
+## [2.7] - 2017-08-25
+### Added
+- Added callable group validator, thanks @hishamhm
+
 ## [2.6] - 2017-02-05
 ### Added
 - Added callable validator
