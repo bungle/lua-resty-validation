@@ -684,6 +684,9 @@ function group:requisites(r, n)
         end
     end
 end
+function group:call(func)
+    self[#self+1] = func
+end
 function group:__call(data)
     local results = setmetatable({}, fields)
     local validators = self.validators
