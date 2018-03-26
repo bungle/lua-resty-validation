@@ -205,6 +205,8 @@ end
 function factory.len(min, max)
     if max then
         if max < min then min, max = max, min end
+    else
+        max = min
     end
     return function(value)
         local t = type(value)
