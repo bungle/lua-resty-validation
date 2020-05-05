@@ -68,7 +68,7 @@ local data = fields("valid", "invalid")
 
 -- This doesn't stop here. You may also want to get only some fields by their name.
 -- You can do that by calling (returns a table):
-local data = data{ "artist" }
+local data = data("artist")
 ```
 
 ## Installation
