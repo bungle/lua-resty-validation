@@ -17,7 +17,7 @@ local upper = string.upper
 local find = string.find
 local gsub = string.gsub
 local sub = string.sub
-local len = utf8 and utf8.len or function(s) return select(2, gsub(s, '[^\x80-\xC1]', '')) end
+local len = utf8 and utf8.len or function(s) return select(2, gsub(s, "[^\128-\193]", "")) end
 local iotype = io.type
 local math = math
 local mathtype = math.type
@@ -371,7 +371,7 @@ function factory.starts(starts)
 end
 function factory.ends(ends)
     return function(value)
-        return ends == '' or sub(value, -len(ends)) == ends
+        return ends == "" or sub(value, -len(ends)) == ends
     end
 end
 function factory.reverse()
@@ -623,7 +623,6 @@ function group:requisite(r)
     local c = #r
     self[#self+1] = function(fields)
         local n = c
-        local valid = true
         for i = 1, c do
             local f = r[i]
             if not fields[f] then
@@ -657,7 +656,6 @@ function group:requisites(r, n)
     local n = n or c
     self[#self+1] = function(fields)
         local j = c
-        local valid = true
         for i = 1, c do
             local f = r[i]
             if not fields[f] then
